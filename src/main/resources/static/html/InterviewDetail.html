@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面试组信息</title>
+    <!-- 引入样式 -->
+    <script src="../js/vue.js"></script>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-table
+                :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                style="width: 100%"
+                stripe
+                height=580>
+
+            <el-table-column
+                    label="ID"
+                    prop="id"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    label="开始时间"
+                    prop="begin"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    label="结束时间"
+                    prop="end"
+                    align="center">
+            </el-table-column>
+
+            <el-table-column
+                    label="用时时间"
+                    prop="time"
+                    align="center">
+            </el-table-column>
+
+            <el-table-column
+                    label="答题正确率"
+                    prop="rate"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-input
+                            v-model="search"
+                            size="mini"
+                            placeholder="输入关键字搜索"/>
+                </template>
+                <template slot-scope="scope">
+
+                    <el-button
+                            type="danger"
+                            plain
+                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <div class="block">
+            <div style="height: 10px"></div>
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[8, 15, 100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total=total>
+            </el-pagination>
+        </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            tableData: [],
+            search: '',
+            currentPage: 1,
+            pageSize: 8,
+            total: 0
+        },
+        methods: {
+            // 删除每行数据
+            handleDelete(index, row) {
+                axios.get('http://localhost:8080/InterviewDetail/delete?id=' + row.id).then(resp=>{
+                    if (resp.data.flag) {
+                        this.$message.success("删除成功！")
+                        // 等待4秒后，刷新页面。
+                        window.setTimeout(()=>{
+                            window.location.reload();
+                        },3000)
+                    }else {
+                        this.$message.error("删除失败！");
+                    }
+                });
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.getAllInterview();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getAllInterview();
+            },
+            // 获取数据
+            getAllInterview() {
+                axios.get('http://localhost:8080/InterviewDetail?currentPage=' + this.currentPage + "&pageSize=" + this.pageSize).then(resp=>{
+                    if (resp.data.flag) {
+                        let all = resp.data.data.list;
+                        for (let i = 0; i < all.length; i++) {
+                            if (all[i].time >= 60) {
+                                all[i].time = this.formatTime(all[i].time);
+                            }else {
+                                all[i].time = all[i].time + 's';
+                            }
+                            all[i].rate = all[i].rate + '%';
+                        }
+                        this.tableData = resp.data.data.list;
+                        this.currentPage = resp.data.data.currentPage;
+                        this.pageSize = resp.data.data.pageSize;
+                        this.total = resp.data.data.total;
+                    }else {
+                        this.$message.error("请求数据失败！");
+                    }
+                })
+            },
+            // 处理时间单位
+            formatTime(time) {
+                if (time >= 59) {
+                    return Math.floor(time / 60) + 'min' + (time - Math.floor(time / 60) * 60) + 's';
+                }
+            }
+
+        },
+        mounted() {
+            this.getAllInterview();
+        }
+    });
+</script>
+</html>

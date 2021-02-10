@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面试数据总览</title>
+    <!-- 引入样式 -->
+    <script src="../js/vue.js"></script>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script src="../js/axios-0.18.0.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        #app {
+            width: 98%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="chart1" style="height:600px;"></div>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+
+
+    // vue要放在echarts之前，不然不显示图表。
+    let app = new Vue ({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            // 获取当前时间
+            CurentTime() {
+                var now = new Date();
+
+                var year = now.getFullYear();       //年
+                var month = now.getMonth() + 1;     //月
+                var day = now.getDate();            //日
+
+                var hh = now.getHours();            //时
+                var mm = now.getMinutes();          //分
+                var ss = now.getSeconds();
+
+                var clock = year + "";
+
+                if(month < 10)
+                    clock += "0";
+
+                clock += month + "";
+
+                if(day < 10)
+                    clock += "0";
+
+                clock += day + "";
+
+                if(hh < 10)
+                    clock += "0";
+
+                clock += hh + "";
+                if (mm < 10) clock += '0';
+                clock += mm;
+
+                if (ss < 10) clock += '0';
+                clock += ss;
+                return(clock);
+            },
+            // 获取报表数据
+            getReportData() {
+                var myChart = echarts.init(document.getElementById('chart1'));
+                axios.get("http://localhost:8080/reportData/getInterview").then(resp=>{
+                    if (resp.data.data) {
+                        myChart.setOption({
+                            title: {
+                                text: '答题正确率'
+                            },
+                            xAxis: {
+                                type: 'category',
+                                data: resp.data.data.xAxisList
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: resp.data.data.yAxisList,
+                                type: 'line',
+                                smooth: true,
+                                label: {
+                                    normal: {
+                                        show: true, // 线条上是否显示数值
+                                        position: 'top'
+                                    }
+                                }
+                            }]
+                        });
+
+                    }else {
+                        this.$message.error("数据请求出错！");
+                    }
+                })
+
+            }
+        },
+        mounted() {
+            this.getReportData();
+        }
+    });
+
+
+
+
+
+
+
+</script>
+</html>

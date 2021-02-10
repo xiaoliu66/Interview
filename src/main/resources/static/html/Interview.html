@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模拟面试</title>
+    <!-- 引入样式 -->
+    <script src="../js/vue.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script src="../js/axios-0.18.0.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/vue-aplayer"></script>
+    <script>
+        Vue.component('aplayer', VueAPlayer)
+    </script>
+</head>
+<body>
+    <div id="app">
+        <h1>模拟面试</h1>
+
+        <div>
+            <el-button type="primary" @Click="switchtModel()">切换模式</el-button>
+        </div>
+
+        <div>
+            <el-button type="primary" @Click="begin()">开始面试</el-button>
+        </div>
+
+        <aplayer
+                 music=""
+                 :list="music"
+                 :repeat="model"
+        />
+
+    </div>
+</body>
+<script>
+    new Vue ({
+        el: "#app",
+        data: {
+            num: 15, // 默认选取15道问题
+            // 音频文件播放列表
+            music:[{
+                title: "",
+                artist: "",
+                src: "",
+                pic: ""
+            }],
+            model: ""
+        },
+        methods: {
+            switchtModel() {
+                this.model = "repeat-all";
+                console.log("ok");
+            },
+            begin() {
+                axios.get("http://localhost:8080/Interview/random/" + this.num).then(resp=>{
+                    if (resp.data.flag) {
+                       this.music = resp.data.data;
+                    }
+                })
+            }
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="js/vue.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <style>
+        #welcome {
+            width: 200px;
+            float: right;
+            position: relative;
+            text-align: center;
+            margin-right: 50px;
+            color: #F2F6FC;
+            line-height: 44px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" style="width: 100%">
+    <el-container>
+        <el-header style="height:45px; background-color: #0abdfe">
+
+
+
+            <el-dropdown style="float: right; position: relative;margin-top: 9px" @command="handleCommand">
+
+                <span style="text-align: center; font-size: 18px; color: #F2F6FC;">
+                 设置<i class="el-icon-setting"></i>
+                </span>
+
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-switch-button" command="logout">
+                        退出
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+
+            </el-dropdown>
+
+            <div id="welcome">
+                欢迎您，尊敬的{{username}}
+            </div>
+        </el-header>
+
+
+        <el-container>
+
+            <el-aside style="width:200px; ">
+                <el-row class="tac">
+                    <el-menu
+                            default-active="1"
+                            class="el-menu-vertical-demo"
+                            @open="handleOpen"
+                            @close="handleClose">
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-s-home"></i>
+                                <span>数据准备</span>
+                            </template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-1">
+                                    <a :href="link.muban" target="right">模板下载</a>
+                                </el-menu-item>
+                                <el-menu-item index="1-2">
+                                    <a :href="link.Interview" target="right">模拟面试</a>
+                                </el-menu-item>
+                            </el-menu-item-group>
+
+                            <el-menu-item index="1-4-1">
+                                <a :href="link.Interview2" target="right">模拟面试2</a>
+                            </el-menu-item>
+                        </el-submenu>
+
+                        <el-submenu index="2">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span slot="title">面试信息</span>
+                            </template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-4-1">
+                                    <a :href="link.InterviewDetail" target="right">面试组信息</a>
+                                </el-menu-item>
+                                <el-menu-item index="1-4-2">
+                                    <a :href="link.InterviewListDetail" target="right">面试项信息</a>
+                                </el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+
+                        <el-submenu index="3">
+                            <template slot="title">
+                                <i class="el-icon-user-solid"></i>
+                                <span slot="title">权限管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-4-1">
+                                    <a :href="link.userManager" target="right">用户管理</a>
+                                </el-menu-item>
+                                <el-menu-item index="1-4-2">
+                                    <a :href="link.roleManager" target="right">角色管理</a>
+                                </el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+
+                        <el-submenu index="4">
+                            <template slot="title">
+                                <i class="el-icon-s-data"></i>
+                                <span slot="title">数据统计</span>
+                            </template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-4-1">
+                                    <a :href="link.ReportData" target="right">面试数据总览</a>
+                                </el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+                    </el-menu>
+
+                </el-row>
+            </el-aside>
+
+            <el-main style="height: 675px;">
+                <iframe name="right" src="./html/ReportData.html" width="98%" height="98%" frameborder="0"></iframe>
+            </el-main>
+        </el-container>
+
+    </el-container>
+
+
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            link: {
+                muban: '/html/Download.html',
+                Interview: '/html/Interview.html',
+                Interview2: '/html/Interview2.html',
+                ReportData: '/html/ReportData.html',
+                InterviewDetail: '/html/InterviewDetail.html',
+                InterviewListDetail: '/html/InterviewListDetail.html',
+                userManager: '',
+                roleManager: ''
+            },
+            username: ''
+        },
+        methods: {
+            handleOpen() {
+
+            },
+            handleClose() {
+
+            },
+            // 退出当前账户
+            handleCommand(command) {
+                window.location.href = "/logout";
+            }
+        },
+        created() {
+
+        },
+        mounted() {
+            var name = localStorage.getItem("username");
+            this.username = name;
+        }
+    });
+</script>
+</html>

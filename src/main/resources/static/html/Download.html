@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下载页面</title>
+    <script src="../js/vue.js"></script>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script src="../js/axios-0.18.0.js"></script>
+</head>
+<body>
+    <h1>下载页面</h1>
+    <div id="app">
+        <div class="box">
+            <el-card class="box-card">
+                <div class="boxMain">
+                    <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()">模板下载</el-button>
+                    <el-upload action="/upload/excel"
+                               name="excelFile"
+                               :show-file-list="false"
+                               :on-success="handleSuccess">
+                        <el-button type="primary" >上传文件</el-button>
+                    </el-upload>
+                </div>
+                <div>
+                    操作说明：请点击"模板下载"按钮获取模板excel文件，在模板文件中录入数据后点击"上传文件"按钮上传excel文件。
+                </div>
+            </el-card>
+        </div>
+
+        <div>
+            <el-button  type="primary" plain @click="savemp3()">一键生成语音</el-button>
+        </div>
+    </div>
+
+</body>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+
+        },
+        methods:{
+            //下载模板文件
+            downloadTemplate() {
+                window.location.href="../template/data.xlsx";
+            },
+            // 一键生成语音文件
+            savemp3() {
+                axios.get("http://localhost:8080/voice/local").then(resp=>{
+                    if (resp.data.flag) {
+                        this.$message({
+                            message: resp.data.data,
+                            type: 'success'
+                        });
+                    }else {
+                        this.$message.error(resp.data.data);
+                    }
+                })
+                .catch(error=>{
+                    this.$message.error(resp.data.data);
+                })
+            }
+
+        }
+    });
+</script>
+</html>
