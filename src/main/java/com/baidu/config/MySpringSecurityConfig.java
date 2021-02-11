@@ -48,7 +48,7 @@ public class MySpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //释放静态资源
-            web.ignoring().antMatchers("/css/**","/js/**","/bootstrap-3.3.7-dist/**","/html/**","/element-ui/**");
+            web.ignoring().antMatchers("/css/**","/js/**","/html/**");
     }
 
     @Override
