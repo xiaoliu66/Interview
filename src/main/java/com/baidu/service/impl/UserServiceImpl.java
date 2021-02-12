@@ -35,4 +35,20 @@ public class UserServiceImpl implements UserService {
 
         return map;
     }
+
+    /**
+     * 查询所有用户及其所拥有的权限(分页查询)
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public IPage<Map<String, Object>> getAllUserRole(Integer currentPage, Integer pageSize) {
+        Page page = new Page(currentPage,pageSize);
+        IPage<Map<String, Object>> allUserRole = userMapper.getAllUserRole(page);
+
+        return allUserRole;
+    }
+
+
 }

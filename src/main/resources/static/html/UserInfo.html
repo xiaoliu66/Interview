@@ -13,6 +13,19 @@
 </head>
 <body>
     <div id="app">
+        <div>
+            <el-button type="primary" plain>新增用户</el-button>
+
+            <el-input
+                    style="width: 280px; margin-left: 750px;margin-right: 20px;"
+                    placeholder="请输入id或用户名"
+                    v-model="input">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+            </el-input>
+            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+        </div>
+        <br/>
+
         <el-table
                 :data="tableData"
                 stripe
@@ -35,7 +48,6 @@
                     <div slot="reference" class="name-wrapper">
                         <el-tag size="big">{{ scope.row.username }}</el-tag>
                     </div>
-
                 </template>
             </el-table-column>
 
@@ -46,6 +58,17 @@
                 <template slot-scope="scope">
                     <i class="el-icon-time"></i>
                     <span style="margin-left: 10px">{{ scope.row.createtime }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    label="所属角色"
+                    width="180"
+                    align="center">
+                <template slot-scope="scope">
+                    <div class="name-wrapper">
+                        <span size="big">{{ scope.row.roleName }}</span>
+                    </div>
                 </template>
             </el-table-column>
 
@@ -68,7 +91,7 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
-                    :page-sizes="[1,2,3,4]"
+                    :page-sizes="[5,10,15]"
                     :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="total">
@@ -82,8 +105,9 @@
         data: {
             tableData: [],
             currentPage: 1,
-            pageSize: 1,
-            total: 0
+            pageSize: 5,
+            total: 0,
+            input: ''
         },
         methods: {
             handleEdit(index, row) {
@@ -103,7 +127,7 @@
             getAllUser() {
                 axios.get('http://localhost:8080/user/' + this.currentPage + "/" +this.pageSize).then(res=>{
                     if (res.data.flag) {
-                        this.tableData = res.data.data.list;
+                        this.tableData = res.data.data.records;
                         this.currentPage = res.data.data.currentPage;
                         this.pageSize = res.data.data.pageSize;
                         this.total = res.data.data.total;

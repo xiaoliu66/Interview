@@ -3,12 +3,22 @@
 
 
 <mapper namespace="com.baidu.mapper.UserMapper">
-    <select id="getRole" resultType="String" parameterType="string">
+    <select id="getRole" resultType="java.lang.String" parameterType="string">
         select role.role_name from user,role,t_user_role
         where user.id = t_user_role.user_id
           and role.id = t_user_role.role_id
           and user.username = #{username};
     </select>
 
+    <select id="getAllUserRole" resultType="java.util.Map">
+        select
+            user.id,
+            user.username,
+            date_format(user.createtime, '%Y-%m-%d %H:%i:%s') createtime,
+            role.role_name roleName
+        from user
+                 left join t_user_role on user.id = t_user_role.user_id
+                 left join role on role.id = t_user_role.role_id
+    </select>
 
 </mapper>
