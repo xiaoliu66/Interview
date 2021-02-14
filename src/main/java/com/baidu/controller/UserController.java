@@ -5,10 +5,7 @@ import com.baidu.entity.User;
 import com.baidu.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +17,38 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 分页查询
+     * @param currentPage
+     * @param PageSize
+     * @return
+     */
     @RequestMapping("/{currentPage}/{PageSize}")
     public Result getAllUser(@PathVariable("currentPage") Integer currentPage, @PathVariable("PageSize") Integer PageSize) {
         IPage<Map<String, Object>> allUserRole = userService.getAllUserRole(currentPage, PageSize);
         return new Result(true,"200",allUserRole);
+    }
+
+    /**
+     * 添加用户
+     * @param map
+     * @return
+     */
+    @PostMapping("/addUser")
+    public Result addUser(@RequestBody Map<String,Object> map) {
+        userService.addUser(map);
+        return new Result(true,"200",null);
+    }
+
+    @PostMapping("/editUser")
+    public Result editUser(@RequestBody Map<String,Object> map) {
+        userService.updateUser(map);
+        return new Result(true,"200",null);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public Result deleteUserById(@PathVariable("userId") Integer userId) {
+        userService.deleteUserById(userId);
+        return new Result(true,"200",null);
     }
 }

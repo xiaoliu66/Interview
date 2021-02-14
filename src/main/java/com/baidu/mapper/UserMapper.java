@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Repository;
 
+import javax.websocket.server.PathParam;
 import java.util.Map;
 
 @Repository
@@ -18,4 +19,9 @@ public interface UserMapper extends BaseMapper<User> {
     //public List<Map<String,Object>> getAllUserRole();
 
     IPage<Map<String,Object>> getAllUserRole(Page page);
+
+    // 插入关联表
+    void insertUserRole(@PathParam("userId") Integer userId, @PathParam("roleId") Integer roleId);
+
+    void deleteUserRoleById(Integer userId);
 }

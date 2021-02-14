@@ -3,6 +3,13 @@
 
 
 <mapper namespace="com.baidu.mapper.UserMapper">
+    <insert id="insertUserRole" parameterType="integer">
+        insert into t_user_role values (null,#{userId},#{roleId});
+    </insert>
+    <delete id="deleteUserRoleById" parameterType="java.lang.Integer">
+        delete from t_user_role where user_id = #{userId}
+    </delete>
+
     <select id="getRole" resultType="java.lang.String" parameterType="string">
         select role.role_name from user,role,t_user_role
         where user.id = t_user_role.user_id

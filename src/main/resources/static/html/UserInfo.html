@@ -14,7 +14,101 @@
 <body>
     <div id="app">
         <div>
-            <el-button type="primary" plain>新增用户</el-button>
+            <el-button type="primary" plain @click="addUser()">新增用户</el-button>
+            <!--新增用户-->
+            <el-dialog
+                    title="新增用户"
+                    :visible.sync="centerDialogVisible1"
+                    width="50%"
+                    @close="handleAddClose"
+                    center>
+
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="用户名" prop="username" required>
+                        <el-input v-model="ruleForm.username"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="密码" prop="password">
+                        <el-input type="password" v-model="ruleForm.password" autocomplete="off" :show-password="true"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="创建时间" required>
+                        <el-col :span="11">
+                            <el-form-item prop="createtime">
+                                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.createtime" style="width: 100%;"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+
+
+                    <el-form-item label="所属角色" prop="roleName">
+                        <el-select v-model="ruleForm.roleId" placeholder="请选择活动区域">
+                            <el-option
+                                    v-for="item in roleOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible1 = false;resetForm('ruleForm')">取 消</el-button>
+                </span>
+            </el-dialog>
+
+            <!--编辑用户-->
+            <el-dialog
+                    title="编辑用户"
+                    :visible.sync="centerDialogVisible2"
+                    width="50%"
+                    @close="handleEditClose"
+                    center>
+
+                <el-form :model="editForm" :rules="rules" ref="ruleForm"  label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="用户名" prop="username" required>
+                        <el-input v-model="editForm.username"></el-input>
+                    </el-form-item>
+
+
+                    <el-form-item label="创建时间" required>
+                        <el-col :span="11">
+                            <el-form-item prop="createtime">
+                                <el-date-picker type="date" placeholder="选择日期" v-model="editForm.createtime" style="width: 100%;"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+
+
+                    <el-form-item label="所属角色" prop="roleName">
+                        <el-select v-model="editForm.roleId" placeholder="请选择活动区域">
+                            <el-option
+                                    v-for="item in roleEditOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button type="primary" @click="submitEditForm('ruleForm')">立即修改</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible2 = false;resetForm('ruleForm')">取 消</el-button>
+                </span>
+            </el-dialog>
 
             <el-input
                     style="width: 280px; margin-left: 750px;margin-right: 20px;"
@@ -26,6 +120,7 @@
         </div>
         <br/>
 
+        <!--用户信息表格-->
         <el-table
                 :data="tableData"
                 stripe
@@ -85,9 +180,10 @@
             </el-table-column>
         </el-table>
         <br>
+
+        <!--分页组件-->
         <div class="block">
             <el-pagination
-                    background
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
@@ -99,7 +195,8 @@
         </div>
     </div>
 </body>
-<script>
+<script type="module">
+
     var app = new Vue({
         el: '#app',
         data: {
@@ -107,14 +204,77 @@
             currentPage: 1,
             pageSize: 5,
             total: 0,
-            input: ''
+            input: '', // 输入框的信息
+            centerDialogVisible1: false, // 对话框默认不展示
+            centerDialogVisible2: false, // 对话框默认不展示
+
+            // 新增用户表单数据
+            ruleForm: {
+                username: '',
+                createtime: '',
+                roleId: '',
+                password: '',
+
+            },
+            editForm: {
+                userId: 0,
+                username: '',
+                createtime: '',
+                roleId: '',
+                password: '',
+            },
+            // 表单校验规则
+            rules: {
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                ],
+                roleId: [
+                    { required: true, message: '请选择用户所属角色', trigger: 'change' }
+                ],
+                createtime: [
+                    { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
+                ],
+                password: [
+                    { required: true,trigger: 'blur' }
+                ]
+            },
+            // 角色选择
+            roleOptions: [],
+            roleEditOptions: []
         },
         methods: {
             handleEdit(index, row) {
-                console.log(index, row);
+                this.getAllRole();
+                this.centerDialogVisible2 = true;
+                this.editForm.userId = row.id;
+                this.editForm.username = row.username;
+                this.editForm.createtime = row.createtime;
+                this.editForm.roleId = row.roleId;
+                this.editForm.password = row.password;
             },
             handleDelete(index, row) {
-                console.log(index, row);
+                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete("http://localhost:8080/user/delete/" + row.id).then(resp=>{
+                        if (resp.data.flag) {
+                            this.$message.success("删除成功！");
+                        }
+                        window.setTimeout(()=>{
+                            window.location.reload();
+                        },2000);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
             },
             handleSizeChange(val) {
                 this.pageSize = val;
@@ -124,18 +284,105 @@
                 this.currentPage = val;
                 this.getAllUser();
             },
+            // 新增对话框关闭之后
+            handleAddClose() {
+                // 清除表单状态
+                this.resetForm('ruleForm');
+            },
+            // 编辑对话框关闭之后
+            handleEditClose() {
+                // 清除表单状态
+                this.resetForm('ruleForm');
+            },
             getAllUser() {
                 axios.get('http://localhost:8080/user/' + this.currentPage + "/" +this.pageSize).then(res=>{
                     if (res.data.flag) {
                         this.tableData = res.data.data.records;
-                        this.currentPage = res.data.data.currentPage;
-                        this.pageSize = res.data.data.pageSize;
+                        this.currentPage = res.data.data.current;
+                        this.pageSize = res.data.data.size;
                         this.total = res.data.data.total;
                     }
                 }).catch(e=>{
                     this.$message.error("获取数据失败！");
                 })
+            },
+            // 添加用户
+            addUser() {
+                this.centerDialogVisible1 = true;
+                this.ruleForm.createtime = this.timeStamp2String();
+                this.getAllRole();
+            },
+            // 新增用户提交
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/user/addUser",this.ruleForm).then(resp=>{
+                            if (resp.data.flag) {
+                                this.$message.success("添加用户成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(()=>{
+                                    window.location.reload();
+                                },2000)
+                            }else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error=>{
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            // 编辑用户提交
+            submitEditForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/user/editUser",this.editForm).then(resp=>{
+                            if (resp.data.flag) {
+                                this.$message.success("添加用户成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(()=>{
+                                    window.location.reload();
+                                },2000)
+                            }else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error=>{
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            // 时间转换为字符
+            timeStamp2String(time){
+                var datetime = new Date();
+                //datetime.setTime(time);
+                var year = datetime.getFullYear();
+                var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+                var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+                var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+                var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+                var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+                return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+            },
+            // 获取所有的角色信息
+            getAllRole() {
+                axios.get("http://localhost:8080/role").then(rep=>{
+                    if (rep.data.flag) {
+                        this.roleOptions = rep.data.data;
+                        this.roleEditOptions = rep.data.data;
+                    }
+                })
             }
+
         },
         created() {
             this.getAllUser();
@@ -143,7 +390,7 @@
         mounted() {
 
         }
+    });
 
-    })
 </script>
 </html>

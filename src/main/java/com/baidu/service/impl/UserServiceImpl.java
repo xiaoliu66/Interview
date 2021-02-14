@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +50,56 @@ public class UserServiceImpl implements UserService {
         IPage<Map<String, Object>> allUserRole = userMapper.getAllUserRole(page);
 
         return allUserRole;
+    }
+
+    /**
+     * 添加用户和相关角色
+     * @param map
+     */
+    @Override
+    @Transactional
+    public void addUser(Map<String,Object> map) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String username = (String) map.get("username");
+        String password = bCryptPasswordEncoder.encode(map.get("password").toString());
+        String createtime = (String) map.get("createtime");
+        User user = new User(null,username,password,createtime);
+        userMapper.insert(user);
+        // 获取user表中的主键
+        Integer userId = user.getId();
+        // 插入关联表中
+        Integer roleId = (Integer) map.get("roleName");
+        userMapper.insertUserRole(userId,roleId);
+    }
+
+    /**
+     * 删除用户
+     * @param userId
+     */
+    @Override
+    @Transactional
+    public void deleteUserById(Integer userId) {
+        userMapper.deleteById(userId);
+        userMapper.deleteUserRoleById(userId);
+    }
+
+    /**
+     * 编辑用户
+     * @param map
+     */
+    @Override
+    @Transactional
+    public void updateUser(Map<String, Object> map) {
+        Integer userId = (Integer) map.get("userId");
+        String username = (String) map.get("username");
+        String createtime = (String) map.get("createtime");
+        Integer roleId = (Integer) map.get("roleId");
+        User user = new User(userId,username,null,createtime);
+
+        userMapper.updateById(user);
+        // 更新关联表
+        userMapper.deleteUserRoleById(userId);
+        userMapper.insertUserRole(userId,roleId);
     }
 
 

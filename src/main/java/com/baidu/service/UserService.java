@@ -10,4 +10,10 @@ public interface UserService {
 
     // 查询所有用户及其所拥有的权限
     public IPage<Map<String, Object>> getAllUserRole(Integer currentPage, Integer pageSize);
+
+    void addUser(Map<String,Object> map);
+
+    void deleteUserById(Integer userId);
+
+    void updateUser(Map<String, Object> map);
 }
