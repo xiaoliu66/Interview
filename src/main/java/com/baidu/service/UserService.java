@@ -16,4 +16,6 @@ public interface UserService {
     void deleteUserById(Integer userId);
 
     void updateUser(Map<String, Object> map);
+
+    Map<String, Object> getUserByKeyword(String keyword);
 }

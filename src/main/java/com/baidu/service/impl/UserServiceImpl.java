@@ -102,5 +102,29 @@ public class UserServiceImpl implements UserService {
         userMapper.insertUserRole(userId,roleId);
     }
 
+    /**
+     * 关键字查找
+     * @param keyword
+     * @return
+     */
+    @Override
+    public Map<String, Object> getUserByKeyword(String keyword) {
+        Map<String, Object> map = new HashMap<>();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",keyword).or().eq("username",keyword);
+        User user = userMapper.selectOne(queryWrapper);
+
+        map.put("id",user.getId());
+        map.put("username",user.getUsername());
+        map.put("createtime",user.getCreatetime());
+
+        if (user != null) {
+            String role = userMapper.getRole(keyword);
+            map.put("roleName",role);
+        }
+
+        return map;
+    }
+
 
 }
