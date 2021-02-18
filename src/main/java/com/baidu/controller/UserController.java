@@ -1,7 +1,6 @@
 package com.baidu.controller;
 
 import com.baidu.entity.Result;
-import com.baidu.entity.User;
 import com.baidu.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;

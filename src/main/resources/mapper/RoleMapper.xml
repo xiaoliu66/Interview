@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.baidu.mapper.RoleMapper">
+    <insert id="addRole">
+        insert into t_role_url values
+        <foreach collection="urlId" item="i" separator="," >
+            (null,#{roleId},#{i})
+        </foreach>
+    </insert>
+
+
+    <select id="selectRole" resultType="java.util.Map"
+            parameterType="com.baomidou.mybatisplus.extension.plugins.pagination.Page">
+        select
+            role.id roleId,
+            url.id urlId,
+            role.role_name roleName,
+            t2.parent_name parentName,
+            url.children_title childrenTitle,
+            url.children_name childrenName,
+            url.children_url childrenUrl
+        from role
+                 left join t_role_url on role.id = t_role_url.role_id
+                 left join url on url.id = t_role_url.url_id
+                 INNER JOIN url t2 on url.parent_id = t2.id
+    </select>
+</mapper>

@@ -3,8 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <title>角色信息管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+
 </head>
 <body>
+    <div id="app">
+        <div>
+            <el-button type="primary" plain @click="addUser()">新增角色</el-button>
+            <!--新增用户-->
+            <el-dialog
+                    title="新增角色"
+                    :visible.sync="centerDialogVisible1"
+                    width="50%"
+                    @close="handleAddClose"
+                    center>
 
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="角色名" prop="rolename" required>
+                        <el-input v-model="ruleForm.rolename"></el-input>
+                    </el-form-item>
+
+                    <div style="margin-left: 40px;">
+                        <span>选择角色能访问的资源</span>
+                    </div>
+                    <br/>
+                    <el-tree
+                            style="margin-left: 40px;"
+                            default-expand-all
+                            :data="treeData"
+                            show-checkbox
+                            node-key="id"
+                            ref="tree"
+                            :props="defaultProps">
+
+                    </el-tree>
+
+
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible1 = false;resetForm('ruleForm')">取 消</el-button>
+                </span>
+            </el-dialog>
+
+            <!--编辑用户-->
+            <el-dialog
+                    title="编辑用户"
+                    :visible.sync="centerDialogVisible2"
+                    width="50%"
+                    @close="handleEditClose"
+                    center>
+
+                <el-form :model="editForm" :rules="rules" ref="ruleForm"  label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="用户名" prop="username" required>
+                        <el-input v-model="editForm.username"></el-input>
+                    </el-form-item>
+
+
+
+                    <el-form-item>
+                        <el-button type="primary" @click="submitEditForm('ruleForm')">立即修改</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible2 = false;resetForm('ruleForm')">取 消</el-button>
+                </span>
+            </el-dialog>
+
+            <!--搜索框-->
+            <el-input
+                    style="width: 280px; margin-left: 700px;margin-right: 20px;"
+                    placeholder="请输入id或用户名"
+                    v-model="input">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+            </el-input>
+            <el-button type="primary" icon="el-icon-search" @click="keywordSearch()">搜索</el-button>
+        </div>
+        <br/>
+
+        <!--用户信息表格-->
+        <el-table
+                :data="tableData"
+                stripe
+                style="width: 100%;">
+            <el-table-column
+                    label="ID"
+                    width="100"
+                    type="index"
+                    align="center">
+
+            </el-table-column>
+
+
+            <el-table-column
+                    label="角色名"
+                    width="180"
+                    align="center">
+                <template slot-scope="scope">
+                    <div slot="reference" class="name-wrapper">
+                        <el-tag size="big">{{ scope.row.roleName }}</el-tag>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    label="父级节点名称"
+                    width="140"
+                    align="center">
+                <template slot-scope="scope">
+                    <div>
+                        <span size="big">{{ scope.row.parentName }}</span>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    label="子节点标题"
+                    width="180"
+                    align="center">
+                <template slot-scope="scope">
+                    <div slot="reference" class="name-wrapper">
+                        <span size="big">{{ scope.row.childrenTitle }}</span>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    label="子节点名称"
+                    width="180"
+                    align="center">
+                <template slot-scope="scope">
+                    <div slot="reference" class="name-wrapper">
+                        <span size="big">{{ scope.row.childrenName }}</span>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    label="子节点路径"
+                    width="250"
+                    align="center">
+                <template slot-scope="scope">
+                    <div slot="reference" class="name-wrapper">
+                        <span size="big">{{ scope.row.childrenUrl }}</span>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <br>
+
+        <!--分页组件-->
+        <div class="block">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5,10,15]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
+    </div>
 </body>
+<script type="module">
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            tableData: [],
+            currentPage: 1,
+            pageSize: 5,
+            total: 0,
+            input: '', // 输入框的信息
+            centerDialogVisible1: false, // 对话框默认不展示
+            centerDialogVisible2: false, // 对话框默认不展示
+
+            // 新增角色表单数据
+            ruleForm: {
+                rolename: '',
+                addTreeData: []
+            },
+            editForm: {
+                userId: 0,
+                rolename: ''
+            },
+            // 表单校验规则
+            rules: {
+                rolename: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                ]
+            },
+            // 后台返回的资源列表
+            treeData: [],
+
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            }
+        },
+        methods: {
+            handleEdit(index, row) {
+                this.getAllRole();
+                this.centerDialogVisible2 = true;
+                this.editForm.userId = row.id;
+                this.editForm.username = row.username;
+                this.editForm.createtime = row.createtime;
+                this.editForm.roleId = row.roleId;
+                this.editForm.password = row.password;
+            },
+            handleDelete(index, row) {
+                this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete("http://localhost:8080/role/delete/" + row.roleId + "/" + row.urlId).then(resp=>{
+                        if (resp.data.flag) {
+                            this.$message.success("删除成功！");
+                        }
+                        window.setTimeout(()=>{
+                            window.location.reload();
+                        },2000);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.getAllRole();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getAllRole();
+            },
+            // 新增对话框关闭之后
+            handleAddClose() {
+                // 清除表单状态
+                this.resetForm('ruleForm');
+            },
+            // 编辑对话框关闭之后
+            handleEditClose() {
+                // 清除表单状态
+                this.resetForm('ruleForm');
+            },
+            getAllRole() {
+                axios.get('http://localhost:8080/role/' + this.currentPage + "/" +this.pageSize).then(res=>{
+                    if (res.data.flag) {
+                        this.tableData = res.data.data.records;
+                        this.currentPage = res.data.data.current;
+                        this.pageSize = res.data.data.size;
+                        this.total = res.data.data.total;
+                    }
+                }).catch(e=>{
+                    this.$message.error("获取数据失败！");
+                })
+            },
+            // 添加用户
+            addUser() {
+                this.centerDialogVisible1 = true;
+                this.getAllRole();
+            },
+            // 新增用户提交
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.getCheckedKeys();
+                        axios.post("http://localhost:8080/role/addRole",this.ruleForm).then(resp=>{
+                            if (resp.data.flag) {
+                                this.$message.success("添加用户成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(()=>{
+                                    window.location.reload();
+                                },2000)
+                            }else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error=>{
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            // 编辑用户提交
+            submitEditForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/user/editUser",this.editForm).then(resp=>{
+                            if (resp.data.flag) {
+                                this.$message.success("添加用户成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(()=>{
+                                    window.location.reload();
+                                },2000)
+                            }else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error=>{
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+                this.resetChecked();
+            },
+            // 时间转换为字符
+            timeStamp2String(time){
+                var datetime = new Date();
+                //datetime.setTime(time);
+                var year = datetime.getFullYear();
+                var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+                var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+                var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+                var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+                var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+                return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+            },
+            // 关键字查询
+            keywordSearch() {
+                axios.get('http://localhost:8080/user?keyword=' + this.input).then(res=>{
+                    if (res.data.flag) {
+                        this.tableData = res.data.data;
+                    }
+                }).catch(e=>{
+                    this.$message.error("获取数据失败！");
+                })
+            },
+            // 获取树形节点的值
+            getCheckedKeys() {
+                this.ruleForm.addTreeData = this.$refs.tree.getCheckedKeys();
+            },
+            // 清空树形控件的值
+            resetChecked() {
+                this.$refs.tree.setCheckedKeys([]);
+            },
+            // 获取所有的资源路径
+            getAllUrl() {
+                axios.get("http://localhost:8080/url").then(resp=>{
+                    if (resp.data.flag) {
+                        this.treeData = resp.data.data;
+                    }
+                }).catch(error=>{
+                    this.$message.error(error);
+                })
+            }
+
+        },
+        created() {
+            this.getAllRole();
+            this.getAllUrl();
+        },
+        mounted() {
+
+        }
+    });
+
+</script>
 </html>
