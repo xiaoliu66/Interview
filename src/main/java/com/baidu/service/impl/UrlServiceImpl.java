@@ -62,4 +62,14 @@ public class UrlServiceImpl implements UrlService {
 
         return list;
     }
+
+    /**
+     * 根据角色id查询所拥有的的资源
+     * @param roleId
+     * @return
+     */
+    @Override
+    public List<Integer> getUrlByRoleId(Integer roleId) {
+        return urlMapper.getUrlByRoleId(roleId);
+    }
 }

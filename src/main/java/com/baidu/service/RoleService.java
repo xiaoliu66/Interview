@@ -13,4 +13,10 @@ public interface RoleService {
     void addRole(Map<String, Object> map);
 
     void deleteRole(Integer roleId, Integer urlId);
+
+    void deleteRoleById(Integer roleId);
+
+    void updateRole(Map<String, Object> map);
+
+    IPage<Map<String, Object>> getRoleByKeyword(Integer currentPage, Integer pageSize,String keyword);
 }

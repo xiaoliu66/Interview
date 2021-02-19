@@ -10,6 +10,14 @@
         </foreach>
     </insert>
 
+    <delete id="deleteRoleUrl">
+        delete from t_role_url where role_id = #{roleId} and url_id = #{urlId}
+    </delete>
+
+    <delete id="deleteRoleUrl2" parameterType="java.lang.Integer">
+        delete from t_role_url where role_id = #{roleId}
+    </delete>
+
 
     <select id="selectRole" resultType="java.util.Map"
             parameterType="com.baomidou.mybatisplus.extension.plugins.pagination.Page">
@@ -25,5 +33,22 @@
                  left join t_role_url on role.id = t_role_url.role_id
                  left join url on url.id = t_role_url.url_id
                  INNER JOIN url t2 on url.parent_id = t2.id
+    </select>
+
+    <select id="selectRoleByKeyWord" resultType="java.util.Map">
+        select
+            role.id roleId,
+            url.id urlId,
+            role.role_name roleName,
+            t2.parent_name parentName,
+            url.children_title childrenTitle,
+            url.children_name childrenName,
+            url.children_url childrenUrl
+        from role
+                 left join t_role_url on role.id = t_role_url.role_id
+                 left join url on url.id = t_role_url.url_id
+                 INNER JOIN url t2 on url.parent_id = t2.id
+        where role.id = #{keyword} or role.role_name = #{keyword}
+
     </select>
 </mapper>

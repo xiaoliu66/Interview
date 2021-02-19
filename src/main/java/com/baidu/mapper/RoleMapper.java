@@ -13,5 +13,11 @@ public interface RoleMapper extends BaseMapper<Role> {
 
     IPage<Map<String, Object>> selectRole(Page page);
 
-    void addRole(@Param("roleId") Integer roleId,@Param("urlId") List<Integer> addTreeData);
+    void addRole(@Param("roleId") Integer roleId,@Param("urlId") List<Integer> urlIds);
+
+    void deleteRoleUrl(Integer roleId, Integer urlId);
+
+    void deleteRoleUrl2(Integer roleId);
+
+    IPage<Map<String, Object>> selectRoleByKeyWord(Page page,String keyword);
 }

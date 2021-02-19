@@ -5,4 +5,6 @@ import java.util.Map;
 
 public interface UrlService {
     List<Map<String, Object>> getAllUrl();
+
+    List<Integer> getUrlByRoleId(Integer roleId);
 }

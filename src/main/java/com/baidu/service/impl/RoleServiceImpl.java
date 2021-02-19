@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Transactional
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
@@ -61,6 +60,7 @@ public class RoleServiceImpl implements RoleService {
      * @param map
      */
     @Override
+    @Transactional
     public void addRole(Map<String, Object> map) {
         String rolename = (String) map.get("rolename");
         ArrayList<Integer> addTreeData = (ArrayList) map.get("addTreeData");
@@ -94,12 +94,104 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 删除
+     * 删除角色拥有的资源
      * @param roleId
      * @param urlId
      */
     @Override
+    @Transactional
     public void deleteRole(Integer roleId, Integer urlId) {
+        roleMapper.deleteRoleUrl(roleId,urlId);
+    }
 
+    /**
+     * 删除角色
+     * @param roleId
+     */
+    @Override
+    @Transactional
+    public void deleteRoleById(Integer roleId) {
+        // 先删除角色表
+        roleMapper.deleteById(roleId);
+        // 再删除关联表
+        roleMapper.deleteRoleUrl2(roleId);
+    }
+
+    /**
+     * 修改角色
+     * @param map
+     */
+    @Override
+    @Transactional
+    public void updateRole(Map<String, Object> map) {
+        String rolename = (String) map.get("rolename");
+        Integer roleId = (Integer) map.get("roleId");
+        List<Integer> urlIds = (List<Integer>) map.get("urlIds");
+
+        if (rolename.length() != 0) {
+            Role role = new Role(roleId,rolename);
+            roleMapper.updateById(role);
+
+            // 现获取所有父节点的id
+            QueryWrapper<Url> queryWrapper = new QueryWrapper<>(new Url(),"id");
+            queryWrapper.eq("is_parent", 1);
+            List<Url> urls = urlMapper.selectList(queryWrapper);
+
+            List<Integer> urlIdList = new ArrayList<>();
+
+            // 去除父节点
+            for (Integer addTreeDatum : urlIds) {
+                int i = 0;
+                for (Url url : urls) {
+                    if (url.getId() == addTreeDatum) {
+                        break;
+                    }else {
+                        i++;
+                        if (i == 4) urlIdList.add(addTreeDatum);
+                    }
+                }
+            }
+
+            // 先删除关联表中的，再插入到关联表中。
+            roleMapper.deleteRoleUrl2(roleId);
+            roleMapper.addRole(roleId,urlIdList);
+        }else {
+            // 现获取所有父节点的id
+            QueryWrapper<Url> queryWrapper = new QueryWrapper<>(new Url(),"id");
+            queryWrapper.eq("is_parent", 1);
+            List<Url> urls = urlMapper.selectList(queryWrapper);
+
+            List<Integer> urlIdList = new ArrayList<>();
+
+            // 去除父节点
+            for (Integer addTreeDatum : urlIds) {
+                int i = 0;
+                for (Url url : urls) {
+                    if (url.getId() == addTreeDatum) {
+                        break;
+                    }else {
+                        i++;
+                        if (i == 4) urlIdList.add(addTreeDatum);
+                    }
+                }
+            }
+
+            // 先删除关联表中的，再插入到关联表中。
+            roleMapper.deleteRoleUrl2(roleId);
+            roleMapper.addRole(roleId,urlIdList);
+        }
+    }
+
+    /**
+     * 根据关键字查询
+     * @param currentPage
+     * @param pageSize
+     * @param keyword
+     * @return
+     */
+    public IPage<Map<String, Object>> getRoleByKeyword(Integer currentPage, Integer pageSize,String keyword) {
+        Page page = new Page(currentPage,pageSize);
+        IPage<Map<String, Object>> iPage = roleMapper.selectRoleByKeyWord(page,keyword);
+        return iPage;
     }
 }

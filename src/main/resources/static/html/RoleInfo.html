@@ -14,11 +14,11 @@
 <body>
     <div id="app">
         <div>
-            <el-button type="primary" plain @click="addUser()">新增角色</el-button>
+            <el-button type="primary" plain @click="addRole()">新增角色</el-button>
             <!--新增用户-->
             <el-dialog
                     title="新增角色"
-                    :visible.sync="centerDialogVisible1"
+                    :visible.sync="centerDialogVisibleAdd"
                     width="50%"
                     @close="handleAddClose"
                     center>
@@ -38,8 +38,7 @@
                             :data="treeData"
                             show-checkbox
                             node-key="id"
-                            ref="tree"
-                            :props="defaultProps">
+                            ref="tree">
 
                     </el-tree>
 
@@ -52,40 +51,101 @@
 
 
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible1 = false;resetForm('ruleForm')">取 消</el-button>
+                    <el-button @click="centerDialogVisibleAdd = false;resetForm('ruleForm')">取 消</el-button>
                 </span>
             </el-dialog>
+            <span>&nbsp;&nbsp;</span>
 
-            <!--编辑用户-->
+            <el-button type="primary" plain @click="deleteRole()">删除角色</el-button>
+            <!--删除角色-->
             <el-dialog
-                    title="编辑用户"
-                    :visible.sync="centerDialogVisible2"
+                    title="删除角色"
+                    :visible.sync="centerDialogVisibleDelete"
                     width="50%"
-                    @close="handleEditClose"
                     center>
 
-                <el-form :model="editForm" :rules="rules" ref="ruleForm"  label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="用户名" prop="username" required>
-                        <el-input v-model="editForm.username"></el-input>
-                    </el-form-item>
+                    <el-table
+                            :data="deleteRoleData"
+                            stripe
+                            style="width: 100%">
+                        <el-table-column
+                                prop="value"
+                                label="ID"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="label"
+                                label="角色名"
+                                width="180">
+                        </el-table-column>
 
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="handleDeleteRole(scope.$index, scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
 
+                    </el-table>
 
-                    <el-form-item>
-                        <el-button type="primary" @click="submitEditForm('ruleForm')">立即修改</el-button>
-                        <el-button @click="resetForm('ruleForm')">重置</el-button>
-                    </el-form-item>
-                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisibleDelete = false">取 消</el-button>
+                </span>
+            </el-dialog>
+            <span>&nbsp;&nbsp;</span>
+            <el-button type="primary" plain @click="updateRole()">修改角色</el-button>
+            <!--修改角色-->
+            <el-dialog
+                    title="修改角色"
+                    :visible.sync="centerDialogVisibleEdit"
+                    width="50%"
+                    center>
+
+                <el-select v-model="editForm.roleId" placeholder="请选择角色" style="margin-left: 30px;width: 100px;" @change="roleChange()">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+
+                </el-select>
+                <el-input v-model="editForm.rolename" style='width: 280px;margin-left: 20px;' placeholder="请输入修改后的角色名。默认不修改。"></el-input>
+
+                </br>
+                <div style="margin-left: 40px; margin-top: 10px;">
+                    <span>选择角色能访问的资源</span>
+                </div>
+
+                <el-tree
+                        style="margin-left: 40px;"
+                        default-expand-all
+                        :data="treeEditData"
+                        :default-checked-keys="treekeys"
+                        show-checkbox
+                        node-key="id"
+                        ref="treeEdit">
+
+                </el-tree>
+
+                <div style="margin-left: 40px;">
+                    <el-button type="primary" @click="submitEditRole()">立即修改</el-button>
+                    <el-button @click="resetEditChecked()">重置</el-button>
+                </div>
+
 
 
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible2 = false;resetForm('ruleForm')">取 消</el-button>
+                    <el-button @click="centerDialogVisibleEdit = false;resetEditChecked()">取 消</el-button>
                 </span>
             </el-dialog>
 
+
             <!--搜索框-->
             <el-input
-                    style="width: 280px; margin-left: 700px;margin-right: 20px;"
+                    style="width: 280px; margin-left: 500px;margin-right: 20px;"
                     placeholder="请输入id或用户名"
                     v-model="input">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -167,9 +227,6 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                            size="mini"
                             type="danger"
                             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -191,18 +248,20 @@
         </div>
     </div>
 </body>
-<script type="module">
+<script>
 
     var app = new Vue({
         el: '#app',
         data: {
             tableData: [],
+            deleteRoleData: [],
             currentPage: 1,
             pageSize: 5,
             total: 0,
             input: '', // 输入框的信息
-            centerDialogVisible1: false, // 对话框默认不展示
-            centerDialogVisible2: false, // 对话框默认不展示
+            centerDialogVisibleAdd: false, // 对话框默认不展示
+            centerDialogVisibleDelete: false, // 对话框默认不展示
+            centerDialogVisibleEdit: false,
 
             // 新增角色表单数据
             ruleForm: {
@@ -210,8 +269,9 @@
                 addTreeData: []
             },
             editForm: {
-                userId: 0,
-                rolename: ''
+                rolename: '',
+                roleId: 1,
+                urlIds: []
             },
             // 表单校验规则
             rules: {
@@ -222,11 +282,12 @@
             },
             // 后台返回的资源列表
             treeData: [],
-
-            defaultProps: {
-                children: 'children',
-                label: 'label'
-            }
+            // 修改角色 查询所有资源 符合前端树形控件的格式
+            treeEditData: [],
+            // 选择角色
+            options: [],
+            // 查询某个角色所拥有的的资源
+            treekeys: []
         },
         methods: {
             handleEdit(index, row) {
@@ -261,6 +322,29 @@
 
 
             },
+            handleDeleteRole(index, row) {
+                this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete("http://localhost:8080/role/deleteRoleById/" + row.value).then(resp=>{
+                        if (resp.data.flag) {
+                            this.$message.success("删除成功！");
+                        }
+                        window.setTimeout(()=>{
+                            window.location.reload();
+                        },2000);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
+            },
             handleSizeChange(val) {
                 this.pageSize = val;
                 this.getAllRole();
@@ -279,6 +363,15 @@
                 // 清除表单状态
                 this.resetForm('ruleForm');
             },
+            // 查询所有的角色
+            selectRole() {
+                axios.get("http://localhost:8080/role").then(resp=>{
+                    if (resp.data.flag) {
+                        this.deleteRoleData = resp.data.data;
+                    }
+                })
+            },
+            // 分页查询
             getAllRole() {
                 axios.get('http://localhost:8080/role/' + this.currentPage + "/" +this.pageSize).then(res=>{
                     if (res.data.flag) {
@@ -291,10 +384,40 @@
                     this.$message.error("获取数据失败！");
                 })
             },
-            // 添加用户
-            addUser() {
-                this.centerDialogVisible1 = true;
+            // 添加角色
+            addRole() {
+                this.centerDialogVisibleAdd = true;
                 this.getAllRole();
+            },
+            // 删除角色
+            deleteRole() {
+                this.centerDialogVisibleDelete = true;
+                this.selectRole();
+            },
+            // 修改角色
+            updateRole() {
+                this.centerDialogVisibleEdit = true;
+                // 查询角色
+                axios.get("http://localhost:8080/role").then(resp=>{
+                    if (resp.data.flag) {
+                        this.options = resp.data.data;
+                    }
+                });
+                // 返回树形控件资源
+                axios.get("http://localhost:8080/url").then(resp=>{
+                    if (resp.data.flag) {
+                        this.treeEditData = resp.data.data;
+                    }
+                }).catch(error=>{
+                    this.$message.error(error);
+                });
+
+                // 默认先查询admin的资源
+                axios.get("http://localhost:8080/url/" + this.editForm.roleId).then(resp=>{
+                    this.treekeys = resp.data.data;
+                }).catch(error=>{
+                    this.$message.error(error);
+                })
             },
             // 新增用户提交
             submitForm(formName) {
@@ -321,31 +444,28 @@
                 });
             },
             // 编辑用户提交
-            submitEditForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        axios.post("http://localhost:8080/user/editUser",this.editForm).then(resp=>{
-                            if (resp.data.flag) {
-                                this.$message.success("添加用户成功！");
-                                // 过2秒后自动关闭窗口并刷新页面
-                                window.setTimeout(()=>{
-                                    window.location.reload();
-                                },2000)
-                            }else {
-                                this.$message.error(resp.data.message);
-                            }
-                        }).catch(error=>{
-                            console.log(error);
-                        })
-                    } else {
-                        this.$message.error("提交失败！请重新检查后再提交。");
-                        return false;
+            submitEditRole() {
+                this.getEditCheckedKeys();
+                axios.post("http://localhost:8080/role/editRole/",this.editForm).then(resp=>{
+                    if (resp.data.flag) {
+                        this.$message.success("修改用户成功！");
+                        // 过2秒后自动关闭窗口并刷新页面
+                        window.setTimeout(()=>{
+                            window.location.reload();
+                        },2000)
+                    }else {
+                        this.$message.error(resp.data.message);
                     }
-                });
+                }).catch(error=>{
+                    console.log(error);
+                })
             },
             resetForm(formName) {
-                this.$refs[formName].resetFields();
-                this.resetChecked();
+                if (this.$refs[formName]!==undefined) {
+                    this.$refs[formName].resetFields();
+                    this.resetChecked();
+                }
+
             },
             // 时间转换为字符
             timeStamp2String(time){
@@ -361,21 +481,37 @@
             },
             // 关键字查询
             keywordSearch() {
-                axios.get('http://localhost:8080/user?keyword=' + this.input).then(res=>{
+                let data = {
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize,
+                    keyword: this.input
+                };
+                axios.post('http://localhost:8080/role/keyword',data).then(res=>{
                     if (res.data.flag) {
-                        this.tableData = res.data.data;
+                        this.tableData = res.data.data.records;
+                        this.currentPage = res.data.data.current;
+                        this.pageSize = res.data.data.size;
+                        this.total = res.data.data.total;
                     }
                 }).catch(e=>{
                     this.$message.error("获取数据失败！");
                 })
             },
-            // 获取树形节点的值
+            // 获取新增树形节点的值
             getCheckedKeys() {
                 this.ruleForm.addTreeData = this.$refs.tree.getCheckedKeys();
+            },
+            // 获取修改树形节点的值
+            getEditCheckedKeys() {
+                this.editForm.urlIds = this.$refs.treeEdit.getCheckedKeys();
             },
             // 清空树形控件的值
             resetChecked() {
                 this.$refs.tree.setCheckedKeys([]);
+            },
+            // 清空修改角色中的树形控件
+            resetEditChecked() {
+                this.$refs.treeEdit.setCheckedKeys([]);
             },
             // 获取所有的资源路径
             getAllUrl() {
@@ -386,8 +522,18 @@
                 }).catch(error=>{
                     this.$message.error(error);
                 })
+            },
+            // 当修改角色变化时
+            roleChange(){
+                // 先清空角色所拥有的资源
+                this.resetEditChecked();
+                // 查询某个角色所拥有的资源
+                axios.get("http://localhost:8080/url/" + this.editForm.roleId).then(resp=>{
+                    this.treekeys = resp.data.data;
+                }).catch(error=>{
+                    this.$message.error(error);
+                })
             }
-
         },
         created() {
             this.getAllRole();
