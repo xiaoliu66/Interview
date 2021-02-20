@@ -347,11 +347,22 @@
             },
             handleSizeChange(val) {
                 this.pageSize = val;
-                this.getAllRole();
+                // 如果输入框中有内容，则执行关键字查找
+                if (this.input.length > 0) {
+                    this.keywordSearch();
+                }else {
+                    this.getAllRole();
+                }
+
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
-                this.getAllRole();
+                // 如果输入框中有内容，则执行关键字查找
+                if (this.input.length > 0) {
+                    this.keywordSearch();
+                }else {
+                    this.getAllRole();
+                }
             },
             // 新增对话框关闭之后
             handleAddClose() {

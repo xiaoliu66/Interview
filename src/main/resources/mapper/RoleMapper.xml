@@ -35,7 +35,7 @@
                  INNER JOIN url t2 on url.parent_id = t2.id
     </select>
 
-    <select id="selectRoleByKeyWord" resultType="java.util.Map">
+    <select id="selectRoleByKeyWord" parameterType="string" resultType="java.util.Map">
         select
             role.id roleId,
             url.id urlId,
