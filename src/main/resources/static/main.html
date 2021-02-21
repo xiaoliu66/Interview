@@ -108,16 +108,16 @@
                             </el-menu-item-group>
                         </el-submenu>
 
-                        <el-submenu index="4">
+                        <el-submenu v-for="menu in menuList" :index="menu.path">
                             <template slot="title">
-                                <i class="el-icon-s-data"></i>
-                                <span slot="title">数据统计</span>
+                                <i class="fa" :class="menu.icon"></i>
+                                {{menu.title}}
                             </template>
-                            <el-menu-item-group>
-                                <el-menu-item index="1-4-1">
-                                    <a :href="link.ReportData" target="right">面试数据总览</a>
+                            <template v-for="child in menu.children">
+                                <el-menu-item :index="child.path">
+                                    <a :href="child.linkUrl" target="right">{{child.title}}</a>
                                 </el-menu-item>
-                            </el-menu-item-group>
+                            </template>
                         </el-submenu>
                     </el-menu>
 
@@ -148,7 +148,22 @@
                 userManager: '/html/UserInfo.html',
                 roleManager: '/html/RoleInfo.html'
             },
-            username: ''
+            username: '',
+            menuList: [
+                {
+                    "path": "4",
+                    "title": "数据统计",
+                    "icon": "el-icon-s-data",
+                    "children": [
+                        {
+                            "path": "1-4-1",
+                            "title": "面试数据总览",
+                            "linkUrl": "/html/ReportData.html",
+                            "children":[]
+                        }
+                    ]
+                }
+            ]
         },
         methods: {
             handleOpen() {
