@@ -21,18 +21,20 @@
 
     <select id="selectRole" resultType="java.util.Map"
             parameterType="com.baomidou.mybatisplus.extension.plugins.pagination.Page">
+
         select
-            role.id roleId,
-            url.id urlId,
-            role.role_name roleName,
-            t2.parent_name parentName,
-            url.children_title childrenTitle,
-            url.children_name childrenName,
-            url.children_url childrenUrl
+                role.id roleId,
+                url.id urlId,
+                role.role_name roleName,
+                t2.name parentName,
+                url.name childrenName,
+                url.path,
+                url.url childrenUrl
         from role
-                 left join t_role_url on role.id = t_role_url.role_id
-                 left join url on url.id = t_role_url.url_id
-                 INNER JOIN url t2 on url.parent_id = t2.id
+             left join t_role_url on role.id = t_role_url.role_id
+             left join url on url.id = t_role_url.url_id
+             INNER JOIN url t2 on url.parent_id = t2.id
+             order by role.id,path
     </select>
 
     <select id="selectRoleByKeyWord" parameterType="string" resultType="java.util.Map">
@@ -51,4 +53,35 @@
         where role.id = #{keyword} or role.role_name = #{keyword}
 
     </select>
+
+    <select id="getRole2Url" resultMap="url" parameterType="string">
+        select
+            t1.path parent_path,
+            t1.name parent_title,
+            t1.icon,
+            t2.path,
+            t2.name title,
+            t2.url linkUrl
+        from url t1
+        inner join url t2 on t1.id = t2.parent_id
+        left join t_role_url t3 on t1.id = t3.url_id
+        left join role t4 on t4.id = t3.role_id
+        where t4.role_name = #{role}
+    </select>
+
+    <resultMap id="url" type="com.baidu.entity.Url">
+        <result column="parent_path" property="path"/>
+        <result column="parent_title" property="name"/>
+        <result column="icon" property="icon"/>
+        <collection property="children" ofType="com.baidu.entity.Url">
+            <result property="path" column="path"/>
+            <result property="name" column="title"/>
+            <result property="url" column="linkUrl"/>
+        </collection>
+    </resultMap>
+
+
+
+
+
 </mapper>

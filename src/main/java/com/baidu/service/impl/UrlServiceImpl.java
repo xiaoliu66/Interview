@@ -34,7 +34,7 @@ public class UrlServiceImpl implements UrlService {
         for (Url url : urls) {
             Map<String, Object> map = new HashMap<>();
             map.put("id",url.getId());
-            map.put("label",url.getParentName());
+            map.put("label",url.getName());
             map.put("children",new ArrayList<>());
 
             list.add(map);
@@ -54,12 +54,11 @@ public class UrlServiceImpl implements UrlService {
                     Map<String,Object> childMap = new HashMap<>();
 
                     childMap.put("id",curl.getId());
-                    childMap.put("label",curl.getChildrenTitle());
+                    childMap.put("label",curl.getName());
                     children.add(childMap);
                 }
             }
         }
-
         return list;
     }
 

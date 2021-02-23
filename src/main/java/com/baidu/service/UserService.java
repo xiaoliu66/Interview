@@ -18,4 +18,6 @@ public interface UserService {
     void updateUser(Map<String, Object> map);
 
     Map<String, Object> getUserByKeyword(String keyword);
+
+    List<Map<String, Object>> getMenuListByUsername(String username);
 }

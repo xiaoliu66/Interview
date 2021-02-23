@@ -65,32 +65,12 @@ public class RoleServiceImpl implements RoleService {
         String rolename = (String) map.get("rolename");
         ArrayList<Integer> addTreeData = (ArrayList) map.get("addTreeData");
 
-        // 现获取所有父节点的id
-        QueryWrapper<Url> queryWrapper = new QueryWrapper<>(new Url(),"id");
-        queryWrapper.eq("is_parent", 1);
-        List<Url> urls = urlMapper.selectList(queryWrapper);
-
-        List<Integer> urlIdList = new ArrayList<>();
-
-        // 去除父节点
-        for (Integer addTreeDatum : addTreeData) {
-            int i = 0;
-            for (Url url : urls) {
-                if (url.getId() == addTreeDatum) {
-                    break;
-                }else {
-                    i++;
-                    if (i == 4) urlIdList.add(addTreeDatum);
-                }
-            }
-        }
-
         Role role = new Role(null,rolename);
         roleMapper.insert(role);
         Integer roleId = role.getId();
 
         // 插入关联表中
-        roleMapper.addRole(roleId,urlIdList);
+        roleMapper.addRole(roleId,addTreeData);
     }
 
     /**
@@ -132,53 +112,14 @@ public class RoleServiceImpl implements RoleService {
             Role role = new Role(roleId,rolename);
             roleMapper.updateById(role);
 
-            // 现获取所有父节点的id
-            QueryWrapper<Url> queryWrapper = new QueryWrapper<>(new Url(),"id");
-            queryWrapper.eq("is_parent", 1);
-            List<Url> urls = urlMapper.selectList(queryWrapper);
-
-            List<Integer> urlIdList = new ArrayList<>();
-
-            // 去除父节点
-            for (Integer addTreeDatum : urlIds) {
-                int i = 0;
-                for (Url url : urls) {
-                    if (url.getId() == addTreeDatum) {
-                        break;
-                    }else {
-                        i++;
-                        if (i == 4) urlIdList.add(addTreeDatum);
-                    }
-                }
-            }
-
             // 先删除关联表中的，再插入到关联表中。
             roleMapper.deleteRoleUrl2(roleId);
-            roleMapper.addRole(roleId,urlIdList);
+            roleMapper.addRole(roleId,urlIds);
         }else {
-            // 现获取所有父节点的id
-            QueryWrapper<Url> queryWrapper = new QueryWrapper<>(new Url(),"id");
-            queryWrapper.eq("is_parent", 1);
-            List<Url> urls = urlMapper.selectList(queryWrapper);
-
-            List<Integer> urlIdList = new ArrayList<>();
-
-            // 去除父节点
-            for (Integer addTreeDatum : urlIds) {
-                int i = 0;
-                for (Url url : urls) {
-                    if (url.getId() == addTreeDatum) {
-                        break;
-                    }else {
-                        i++;
-                        if (i == 4) urlIdList.add(addTreeDatum);
-                    }
-                }
-            }
 
             // 先删除关联表中的，再插入到关联表中。
             roleMapper.deleteRoleUrl2(roleId);
-            roleMapper.addRole(roleId,urlIdList);
+            roleMapper.addRole(roleId,urlIds);
         }
     }
 
@@ -193,5 +134,36 @@ public class RoleServiceImpl implements RoleService {
         Page page = new Page(currentPage,pageSize);
         IPage<Map<String, Object>> iPage = roleMapper.selectRoleByKeyWord(page,keyword);
         return iPage;
+    }
+
+    /**
+     * 根据用户名获取相应地菜单列表
+     * @param username
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getMenuListByRoleName(String username) {
+        List<Url> role2Url = roleMapper.getRole2Url(username);
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Url url : role2Url) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("path",url.getPath());
+            map.put("title",url.getName());
+            map.put("icon",url.getIcon());
+            List<Url> children = url.getChildren();
+            List<Map<String,Object>> mapList = new ArrayList<>();
+            for (Url child : children) {
+                Map<String, Object> map1 = new HashMap<>();
+                map1.put("path",child.getPath());
+                map1.put("title",child.getName());
+                map1.put("linkUrl",child.getUrl());
+
+                mapList.add(map1);
+            }
+            map.put("children",mapList);
+
+            list.add(map);
+        }
+        return list;
     }
 }

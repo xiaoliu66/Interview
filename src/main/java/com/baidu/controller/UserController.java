@@ -64,4 +64,15 @@ public class UserController {
         list.add(map);
         return new Result(true,"200",list);
     }
+
+    /**
+     * 根据用户名获取相应地菜单列表
+     * @param username
+     * @return
+     */
+    @GetMapping("/getMenuList/{username}")
+    public Result getMenuListByUsername(@PathVariable("username") String username) {
+        List<Map<String,Object>> list = userService.getMenuListByUsername(username);
+        return new Result(true,"200",list);
+    }
 }

@@ -19,4 +19,6 @@ public interface RoleService {
     void updateRole(Map<String, Object> map);
 
     IPage<Map<String, Object>> getRoleByKeyword(Integer currentPage, Integer pageSize,String keyword);
+
+    List<Map<String, Object>> getMenuListByRoleName(String username);
 }

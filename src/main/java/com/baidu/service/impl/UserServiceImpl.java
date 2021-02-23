@@ -1,7 +1,10 @@
 package com.baidu.service.impl;
 
+import com.baidu.entity.Url;
 import com.baidu.entity.User;
+import com.baidu.mapper.RoleMapper;
 import com.baidu.mapper.UserMapper;
+import com.baidu.service.RoleService;
 import com.baidu.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +23,8 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public Map<String, Object> getAllUser(int currentPage, int pageSize) {
@@ -124,6 +129,18 @@ public class UserServiceImpl implements UserService {
         }
 
         return map;
+    }
+
+    /**
+     * 根据用户名获取相应地菜单列表
+     * @param username
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getMenuListByUsername(String username) {
+        String role = userMapper.getRole(username);
+        List<Map<String, Object>> list = roleService.getMenuListByRoleName(role);
+        return list;
     }
 
 
