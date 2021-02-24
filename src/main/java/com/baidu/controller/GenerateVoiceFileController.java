@@ -1,14 +1,11 @@
 package com.baidu.controller;
 
 import com.baidu.aip.speech.AipSpeech;
-import com.baidu.aip.speech.TtsResponse;
-import com.baidu.aip.util.Util;
 import com.baidu.entity.Problem;
 import com.baidu.entity.Result;
 import com.baidu.service.ProblemService;
 import com.baidu.utils.BaiDuAIUtils;
 import com.baidu.utils.StringToVoiceUtil;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

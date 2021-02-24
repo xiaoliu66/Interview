@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资源管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.zhimg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.zhimg.com/element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+
+</head>
+<body>
+<div id="app">
+    <div>
+        <el-button type="primary" plain @click="addUrl()">新增资源</el-button>
+        <!--新增资源-->
+        <el-dialog
+                title="新增资源"
+                :visible.sync="centerDialogVisible1"
+                width="50%"
+                @close="handleAddClose"
+                center>
+
+            <el-form :model="urlForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-urlForm">
+                <el-form-item label="资源名称" prop="name" required>
+                    <el-input v-model="urlForm.name" placeholder="推荐使用中文"></el-input>
+                </el-form-item>
+
+                <el-form-item label="是否为父节点" prop="isParent">
+                    <el-radio-group v-model="urlForm.isParent" @change="isParent()">
+                        <el-radio :label="1">是</el-radio>
+                        <el-radio :label="0">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="所属父节点" required v-show="children">
+                    <el-select v-model="urlForm.parentId" placeholder="请选择">
+                        <el-option
+                                v-for="item in parentOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            <span style="float: left;color: #8492a6; font-size: 13px">{{ item.id }}</span>
+                            <span style="float: right">{{ item.name }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+
+
+
+                <el-form-item label="资源路径" required v-show="children">
+                    <el-input v-model="urlForm.url" placeholder="例如 xxx.html"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('urlForm')">立即创建</el-button>
+                    <el-button @click="resetForm('urlForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible1 = false;resetForm('urlForm')">取 消</el-button>
+                </span>
+        </el-dialog>
+
+        <!--编辑资源-->
+        <el-dialog
+                title="编辑用户"
+                :visible.sync="centerDialogVisible2"
+                width="50%"
+                @close="handleEditClose"
+                center>
+
+            <el-form :model="editForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="用户名" prop="username" required>
+                    <el-input v-model="editForm.username"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="创建时间" required>
+                    <el-col :span="11">
+                        <el-form-item prop="createtime">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="editForm.createtime"
+                                            style="width: 100%;"></el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-form-item>
+
+
+                <el-form-item>
+                    <el-button type="primary" @click="submitEditForm('ruleForm')">立即修改</el-button>
+                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                    <el-button @click="centerDialogVisible2 = false;resetForm('ruleForm')">取 消</el-button>
+                </span>
+        </el-dialog>
+
+        <!--搜索框-->
+        <el-input
+                style="width: 280px; margin-left: 700px;margin-right: 20px;"
+                placeholder="请输入id或资源名"
+                v-model="input">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        </el-input>
+        <el-button type="primary" icon="el-icon-search" @click="keywordSearch()">搜索</el-button>
+    </div>
+    <br/>
+
+    <!--资源信息表格-->
+    <el-table
+            :data="tableData"
+            height="490px"
+            stripe
+            style="width: 100%;">
+        <el-table-column
+                label="ID"
+                width="100"
+                align="center">
+            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.id }}</span>
+            </template>
+        </el-table-column>
+
+
+        <el-table-column
+                label="资源名"
+                width="100"
+                align="center">
+            <template slot-scope="scope">
+                <div slot="reference" class="name-wrapper">
+                    <el-tag size="big">{{ scope.row.name }}</el-tag>
+                </div>
+            </template>
+        </el-table-column>
+
+
+        <el-table-column
+                label="层级路径"
+                width="100"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.path }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column
+                label="父节点ID"
+                width="100"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.parentId }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column
+                label="资源路径"
+                width="180"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.url }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column
+                label="是否属于父节点"
+                width="120"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.isParent }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column
+                label="图标"
+                width="180"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.icon }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column
+                label="优先级"
+                width="100"
+                align="center">
+            <template slot-scope="scope">
+                <div class="name-wrapper">
+                    <span size="big">{{ scope.row.priority }}</span>
+                </div>
+            </template>
+        </el-table-column>
+
+        <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+                <el-button
+                        size="mini"
+                        @click="handleEdit(scope.$index, scope.row)">编辑
+                </el-button>
+                <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <br>
+
+    <!--分页组件-->
+    <div class="block">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10,15,20]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
+    </div>
+</div>
+</body>
+<script type="module">
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            tableData: [],
+            currentPage: 1,
+            pageSize: 10,
+            total: 0,
+            input: '', // 输入框的信息
+            centerDialogVisible1: false, // 对话框默认不展示
+            centerDialogVisible2: false, // 对话框默认不展示
+            // 新增资源表单数据
+            urlForm: {
+                name: '',
+                isParent: 0,
+            },
+            editForm: {
+                userId: 0,
+                username: '',
+                createtime: '',
+                password: '',
+            },
+            // 表单校验规则
+            rules: {
+                username: [
+                    {required: true, message: '请输入用户名', trigger: 'blur'},
+                    {min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                ],
+                roleId: [
+                    {required: true, message: '请选择用户所属角色', trigger: 'change'}
+                ],
+                createtime: [
+                    {type: 'string', required: true, message: '请选择日期', trigger: 'change'}
+                ],
+                password: [
+                    {required: true, trigger: 'blur'}
+                ]
+            },
+            //子节点显示状态
+            children: true,
+            // 父节点显示状态
+            parent: false,
+            parentOptions: []
+        },
+        methods: {
+            handleEdit(index, row) {
+                this.getAllUrl();
+                this.centerDialogVisible2 = true;
+                this.editForm.userId = row.id;
+                this.editForm.username = row.username;
+                this.editForm.createtime = row.createtime;
+                this.editForm.roleId = row.roleId;
+                this.editForm.password = row.password;
+            },
+            handleDelete(index, row) {
+                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete("http://localhost:8080/user/delete/" + row.id).then(resp => {
+                        if (resp.data.flag) {
+                            this.$message.success("删除成功！");
+                        }
+                        window.setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.getAllUrl();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getAllUrl();
+            },
+            // 新增对话框关闭之后
+            handleAddClose() {
+                // 清除表单状态
+                this.resetForm('urlForm');
+            },
+            // 编辑对话框关闭之后
+            handleEditClose() {
+                // 清除表单状态
+                this.resetForm('urlForm');
+            },
+            getAllUrl() {
+                axios.get('http://localhost:8080/url/' + this.currentPage + "/" + this.pageSize).then(res => {
+                    if (res.data.flag) {
+                        this.tableData = res.data.data.records;
+                        this.currentPage = res.data.data.current;
+                        this.pageSize = res.data.data.size;
+                        this.total = res.data.data.total;
+                    }
+                }).catch(e => {
+                    this.$message.error("获取数据失败！");
+                })
+            },
+            // 添加资源
+            addUrl() {
+                this.centerDialogVisible1 = true;
+                this.getAllParent();
+            },
+            // 新增资源提交
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/url/addUrl", this.urlForm).then(resp => {
+                            if (resp.data.flag) {
+                                this.$message.success("添加资源成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000)
+                            } else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            // 编辑用户提交
+            submitEditForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/user/editUser", this.editForm).then(resp => {
+                            if (resp.data.flag) {
+                                this.$message.success("添加用户成功！");
+                                // 过2秒后自动关闭窗口并刷新页面
+                                window.setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000)
+                            } else {
+                                this.$message.error(resp.data.message);
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    } else {
+                        this.$message.error("提交失败！请重新检查后再提交。");
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            // 时间转换为字符
+            timeStamp2String(time) {
+                var datetime = new Date();
+                //datetime.setTime(time);
+                var year = datetime.getFullYear();
+                var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+                var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+                var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+                var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+                var second = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+                return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+            },
+            // 获取所有的父节点资源s
+            getAllParent() {
+                axios.get("http://localhost:8080/url/getAllParent").then(resp => {
+                    if (resp.data.flag) {
+                        this.parentOptions = resp.data.data;
+                    }
+                })
+            },
+            // 关键字查询
+            keywordSearch() {
+                axios.get('http://localhost:8080/url/keyword/' + this.currentPage + '/' + this.pageSize + '?keyword=' + this.input).then(res => {
+                    if (res.data.flag) {
+                        this.tableData = res.data.data.records;
+                        this.currentPage = res.data.data.current;
+                        this.pageSize = res.data.data.size;
+                        this.total = res.data.data.total;
+                    }
+                }).catch(e => {
+                    this.$message.error("获取数据失败！");
+                })
+            },
+            // 根据是否是父节点来展示不同的内容
+            isParent() {
+                // this.$message.success(this.urlForm.isParent + "");
+                if (this.children === false) {
+                    this.children = true;
+                }else {
+                    this.children = false;
+                }
+            }
+
+        },
+        created() {
+            this.getAllUrl();
+        },
+        mounted() {
+
+        }
+    });
+
+</script>
+</html>

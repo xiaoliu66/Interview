@@ -91,7 +91,7 @@
                     return ;
                 };
                 this.startTime = this.CurentTime();
-                axios.get("http://localhost:8080//Interview/" + this.num).then(resp=>{
+                axios.get("http://localhost:8080/Interview/" + this.num).then(resp=>{
                     if (resp.data.flag) {
                         this.tableData = resp.data.data;
                         this.data = resp.data.data;
@@ -112,7 +112,7 @@
                     }
                 }
 
-                axios.post("http://localhost:8080//Interview/finished?startTime=" + this.startTime + "&endTime=" + this.endTime, this.tableData)
+                axios.post("http://localhost:8080/Interview/finished?startTime=" + this.startTime + "&endTime=" + this.endTime, this.tableData)
                 .then(resp=>{
                     if (resp.data.flag) {
                         this.$message.success("提交面试信息成功！");

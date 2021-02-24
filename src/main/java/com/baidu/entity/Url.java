@@ -14,9 +14,9 @@ public class Url {
     private String name;
     private Integer parentId;
     private String url;
-    private Character isParent;
+    private String isParent;
     private String icon;
-    private String priority;
+    private Integer priority;
     @TableField(exist = false)
     private List<Url> children;
 }
