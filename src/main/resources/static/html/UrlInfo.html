@@ -23,20 +23,24 @@
                 @close="handleAddClose"
                 center>
 
-            <el-form :model="urlForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-urlForm">
+            <div style="margin-bottom: 15px;">
+                <span>&nbsp;&nbsp;是否是父节点&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <el-radio-group v-model="childrenUrlForm.isParent" @change="isParent()">
+                    <el-radio :label="1">是</el-radio>
+                    <el-radio :label="0">否</el-radio>
+                </el-radio-group>
+            </div>
+
+
+            <!--子节点-->
+            <el-form :model="childrenUrlForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-urlForm" v-show="children">
+
                 <el-form-item label="资源名称" prop="name" required>
-                    <el-input v-model="urlForm.name" placeholder="推荐使用中文"></el-input>
+                    <el-input v-model="childrenUrlForm.name" placeholder="推荐使用中文"></el-input>
                 </el-form-item>
 
-                <el-form-item label="是否为父节点" prop="isParent">
-                    <el-radio-group v-model="urlForm.isParent" @change="isParent()">
-                        <el-radio :label="1">是</el-radio>
-                        <el-radio :label="0">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="所属父节点" required v-show="children">
-                    <el-select v-model="urlForm.parentId" placeholder="请选择">
+                <el-form-item label="所属父节点" prop="parentId" >
+                    <el-select v-model="childrenUrlForm.parentId" placeholder="请选择">
                         <el-option
                                 v-for="item in parentOptions"
                                 :key="item.id"
@@ -50,20 +54,50 @@
 
 
 
-                <el-form-item label="资源路径" required v-show="children">
-                    <el-input v-model="urlForm.url" placeholder="例如 xxx.html"></el-input>
+                <el-form-item label="资源路径" prop="url" required >
+                    <el-input v-model="childrenUrlForm.url" placeholder="例如 xxx.html"></el-input>
                 </el-form-item>
 
+
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('urlForm')">立即创建</el-button>
-                    <el-button @click="resetForm('urlForm')">重置</el-button>
+                    <el-button type="primary" @click="submitForm('childrenUrlForm')">立即创建</el-button>
+                    <el-button @click="resetForm('childrenUrlForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!--父节点-->
+            <el-form :model="parentUrlForm" :rules="rules2" ref="parentUrlForm" label-width="100px" class="demo-urlForm" v-show="parent">
+
+                <el-form-item label="资源名称" prop="name" required>
+                    <el-input v-model="parentUrlForm.name" placeholder="推荐使用中文"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="资源路径" prop="url" required >
+                    <el-input v-model="parentUrlForm.url" placeholder="例如 xxx.html"></el-input>
+                </el-form-item>
+
+                <el-form-item label="选择图标" prop="icon">
+                    <el-radio-group v-model="parentUrlForm.icon" >
+                        <el-radio :label="'el-icon-platform-eleme'">
+                            <i class="el-icon-platform-eleme"></i>
+                        </el-radio>
+                        <el-radio :label="'el-icon-eleme'"><i class="el-icon-eleme"></i></el-radio>
+                        <el-radio :label="'el-icon-delete-solid'"><i class="el-icon-delete-solid"></i></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('parentUrlForm')">立即创建</el-button>
+                    <el-button @click="resetForm('parentUrlForm')">重置</el-button>
                 </el-form-item>
             </el-form>
 
 
             <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible1 = false;resetForm('urlForm')">取 消</el-button>
-                </span>
+                    <el-button @click="centerDialogVisible1 = false;resetForm('parentUrlForm');resetForm('parentUrlForm')">取 消</el-button>
+            </span>
         </el-dialog>
 
         <!--编辑资源-->
@@ -250,9 +284,19 @@
             centerDialogVisible1: false, // 对话框默认不展示
             centerDialogVisible2: false, // 对话框默认不展示
             // 新增资源表单数据
-            urlForm: {
+            childrenUrlForm: {
                 name: '',
                 isParent: 0,
+                parentId: '',
+                url: '',
+                icon: ''
+            },
+            parentUrlForm: {
+                name: '',
+                isParent: 0,
+                parentId: '',
+                url: '',
+                icon: ''
             },
             editForm: {
                 userId: 0,
@@ -262,18 +306,26 @@
             },
             // 表单校验规则
             rules: {
-                username: [
-                    {required: true, message: '请输入用户名', trigger: 'blur'},
-                    {min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                name: [
+                    {required: true, message: '请输入资源名', trigger: 'blur'},
+                    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
                 ],
-                roleId: [
-                    {required: true, message: '请选择用户所属角色', trigger: 'change'}
+                url: [
+                    {required: true, message: '请输入资源路径', trigger: 'blur'},
+                    {min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur'}
+                ]
+            },
+            rules2: {
+                name: [
+                    {required: true, message: '请输入资源名', trigger: 'blur'},
+                    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
                 ],
-                createtime: [
-                    {type: 'string', required: true, message: '请选择日期', trigger: 'change'}
+                parentId: [
+                    {required: true, message: '请选择父节点', trigger: 'blur'}
                 ],
-                password: [
-                    {required: true, trigger: 'blur'}
+                url: [
+                    {required: true, message: '请输入资源路径', trigger: 'blur'},
+                    {min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur'}
                 ]
             },
             //子节点显示状态
@@ -293,12 +345,12 @@
                 this.editForm.password = row.password;
             },
             handleDelete(index, row) {
-                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.delete("http://localhost:8080/user/delete/" + row.id).then(resp => {
+                    axios.delete("http://localhost:8080/url/delete/" + row.id).then(resp => {
                         if (resp.data.flag) {
                             this.$message.success("删除成功！");
                         }
@@ -398,20 +450,11 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+                // 重置后，默认选择非父节点
+                this.children = true;
+                this.parent = false;
             },
-            // 时间转换为字符
-            timeStamp2String(time) {
-                var datetime = new Date();
-                //datetime.setTime(time);
-                var year = datetime.getFullYear();
-                var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
-                var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
-                var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
-                var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
-                var second = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
-                return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-            },
-            // 获取所有的父节点资源s
+            // 获取所有的父节点资源
             getAllParent() {
                 axios.get("http://localhost:8080/url/getAllParent").then(resp => {
                     if (resp.data.flag) {
@@ -437,8 +480,10 @@
                 // this.$message.success(this.urlForm.isParent + "");
                 if (this.children === false) {
                     this.children = true;
+                    this.parent = false;
                 }else {
                     this.children = false;
+                    this.parent = true;
                 }
             }
 

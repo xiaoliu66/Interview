@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Transactional
 public class UrlServiceImpl implements UrlService {
     @Autowired
     private UrlMapper urlMapper;
@@ -127,19 +126,50 @@ public class UrlServiceImpl implements UrlService {
      * @param url
      */
     @Override
+    @Transactional
     public void addUrl(Url url) {
         if (Integer.parseInt(url.getIsParent()) == 0) {
             QueryWrapper<Url> queryWrapper = new QueryWrapper<>();
             queryWrapper.select("max(priority) as priority").eq("parent_id",url.getParentId());
             Url one = urlMapper.selectOne(queryWrapper);
 
-            url.setPriority(one.getPriority() + 1);
-            url.setPath(url.getParentId() + "-" + (one.getPriority()+1) );
-            url.setUrl("/html/" + url.getUrl());
-            urlMapper.insert(url);
-        }else {
+            QueryWrapper<Url> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("id",url.getParentId());
+            Url parent = urlMapper.selectOne(queryWrapper1);
 
+            // 如果父节点是新增加的，则one 是Null
+            if (one == null) {
+                url.setPriority(1);
+                url.setPath(parent.getPath()+ "-" + 1) ;
+                url.setUrl("/html/" + url.getUrl());
+                urlMapper.insert(url);
+            }else {
+                url.setPriority(one.getPriority() + 1);
+                url.setPath(parent.getPath() + "-" + (one.getPriority()+1) );
+                url.setUrl("/html/" + url.getUrl());
+                urlMapper.insert(url);
+            }
+
+        }else {
+            QueryWrapper<Url> urlQueryWrapper = new QueryWrapper<>();
+            urlQueryWrapper.select("max(substring(path,1,1)) as path").eq("is_parent",1);
+            Url one = urlMapper.selectOne(urlQueryWrapper);
+
+            url.setUrl("/html/" + url.getUrl());
+            url.setPath(Integer.parseInt(one.getPath()) + 1 + "");
+            url.setPriority(Integer.parseInt(one.getPath()) + 1);
+
+            urlMapper.insert(url);
         }
 
+    }
+
+    /**
+     * 根据ID删除资源
+     * @param urlId
+     */
+    @Override
+    public void deleteUrlById(Integer urlId) {
+        urlMapper.deleteById(urlId);
     }
 }

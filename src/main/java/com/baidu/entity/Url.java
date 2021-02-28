@@ -1,5 +1,6 @@
 package com.baidu.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Data
 public class Url {
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private String path;
     private String name;

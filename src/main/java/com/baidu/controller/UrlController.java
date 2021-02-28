@@ -13,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/url")
+@CrossOrigin
 public class UrlController {
     @Autowired
     private UrlService urlService;
@@ -81,6 +82,17 @@ public class UrlController {
     @PostMapping("/addUrl")
     public Result addUrl(@RequestBody Url url) {
         urlService.addUrl(url);
+        return new Result(true,"200",null);
+    }
+
+    /**
+     * 根据id删除资源
+     * @param urlId
+     * @return
+     */
+    @DeleteMapping("/delete/{urlId}")
+    public Result deleteUrlById(@PathVariable("urlId") Integer urlId) {
+        urlService.deleteUrlById(urlId);
         return new Result(true,"200",null);
     }
 }

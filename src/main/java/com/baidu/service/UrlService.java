@@ -18,4 +18,6 @@ public interface UrlService {
     List<Map<String, Object>> getAllParent();
 
     void addUrl(Url url);
+
+    void deleteUrlById(Integer urlId);
 }
