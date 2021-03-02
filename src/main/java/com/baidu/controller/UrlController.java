@@ -95,4 +95,10 @@ public class UrlController {
         urlService.deleteUrlById(urlId);
         return new Result(true,"200",null);
     }
+
+    @PutMapping("/updateUrl")
+    public Result updateUrlById(@RequestBody Url url) {
+        urlService.updateUrl(url);
+        return new Result(true,"200",null);
+    }
 }

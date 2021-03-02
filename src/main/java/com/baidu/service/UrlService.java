@@ -20,4 +20,6 @@ public interface UrlService {
     void addUrl(Url url);
 
     void deleteUrlById(Integer urlId);
+
+    void updateUrl(Url url);
 }

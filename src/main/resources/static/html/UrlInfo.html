@@ -25,7 +25,7 @@
 
             <div style="margin-bottom: 15px;">
                 <span>&nbsp;&nbsp;是否是父节点&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <el-radio-group v-model="childrenUrlForm.isParent" @change="isParent()">
+                <el-radio-group v-model="isParent" @change="change()">
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="0">否</el-radio>
                 </el-radio-group>
@@ -33,7 +33,7 @@
 
 
             <!--子节点-->
-            <el-form :model="childrenUrlForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-urlForm" v-show="children">
+            <el-form :model="childrenUrlForm" :rules="rules" ref="childrenUrlForm" label-width="100px" class="demo-urlForm" v-show="children">
 
                 <el-form-item label="资源名称" prop="name" required>
                     <el-input v-model="childrenUrlForm.name" placeholder="推荐使用中文"></el-input>
@@ -72,18 +72,288 @@
                     <el-input v-model="parentUrlForm.name" placeholder="推荐使用中文"></el-input>
                 </el-form-item>
 
-
-                <el-form-item label="资源路径" prop="url" required >
-                    <el-input v-model="parentUrlForm.url" placeholder="例如 xxx.html"></el-input>
-                </el-form-item>
-
                 <el-form-item label="选择图标" prop="icon">
                     <el-radio-group v-model="parentUrlForm.icon" >
-                        <el-radio :label="'el-icon-platform-eleme'">
-                            <i class="el-icon-platform-eleme"></i>
-                        </el-radio>
+                        <el-radio :label="'el-icon-platform-eleme'"><i class="el-icon-platform-eleme"></i></el-radio>
                         <el-radio :label="'el-icon-eleme'"><i class="el-icon-eleme"></i></el-radio>
                         <el-radio :label="'el-icon-delete-solid'"><i class="el-icon-delete-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-delete'"><i class="el-icon-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-s-tools'"><i class="el-icon-s-tools"></i></el-radio>
+                        <el-radio :label="'el-icon-setting'"><i class="el-icon-setting"></i></el-radio>
+                        <el-radio :label="'el-icon-user-solid'"><i class="el-icon-user-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-user'"><i class="el-icon-user"></i></el-radio>
+                        <el-radio :label="'el-icon-phone'"><i class="el-icon-phone"></i></el-radio>
+                        <el-radio :label="'el-icon-phone-outline'"><i class="el-icon-phone-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-more'"><i class="el-icon-more"></i></el-radio>
+                        <el-radio :label="'el-icon-more-outline'"><i class="el-icon-more-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-star-on'"><i class="el-icon-star-on"></i></el-radio>
+                        <el-radio :label="'el-icon-star-off'"><i class="el-icon-star-off"></i></el-radio>
+                        <el-radio :label="'el-icon-s-goods'"><i class="el-icon-s-goods"></i></el-radio>
+                        <el-radio :label="'el-icon-goods'"><i class="el-icon-goods"></i></el-radio>
+                        <el-radio :label="'el-icon-warning'"><i class="el-icon-warning"></i></el-radio>
+                        <el-radio :label="'el-icon-warning-outline'"><i class="el-icon-warning-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-question'"><i class="el-icon-question"></i></el-radio>
+                        <el-radio :label="'el-icon-info'"><i class="el-icon-info"></i></el-radio>
+                        <el-radio :label="'el-icon-remove'"><i class="el-icon-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-plus'"><i class="el-icon-circle-plus"></i></el-radio>
+                        <el-radio :label="'el-icon-success'"><i class="el-icon-success"></i></el-radio>
+                        <el-radio :label="'el-icon-error'"><i class="el-icon-error"></i></el-radio>
+                        <el-radio :label="'el-icon-zoom-in'"><i class="el-icon-zoom-in"></i></el-radio>
+                        <el-radio :label="'el-icon-zoom-out'"><i class="el-icon-zoom-out"></i></el-radio>
+                        <el-radio :label="'el-icon-remove-outline'"><i class="el-icon-remove-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-plus-outline'"><i class="el-icon-circle-plus-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-check'"><i class="el-icon-circle-check"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-close'"><i class="el-icon-circle-close"></i></el-radio>
+                        <el-radio :label="'el-icon-s-help'"><i class="el-icon-s-help"></i></el-radio>
+                        <el-radio :label="'el-icon-help'"><i class="el-icon-help"></i></el-radio>
+                        <el-radio :label="'el-icon-minus'"><i class="el-icon-minus"></i></el-radio>
+                        <el-radio :label="'el-icon-plus'"><i class="el-icon-plus"></i></el-radio>
+                        <el-radio :label="'el-icon-check'"><i class="el-icon-check"></i></el-radio>
+                        <el-radio :label="'el-icon-close'"><i class="el-icon-close"></i></el-radio>
+                        <el-radio :label="'el-icon-picture'"><i class="el-icon-picture"></i></el-radio>
+                        <el-radio :label="'el-icon-picture-outline'"><i class="el-icon-picture-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-picture-outline-round'"><i class="el-icon-picture-outline-round"></i></el-radio>
+                        <el-radio :label="'el-icon-upload'"><i class="el-icon-upload"></i></el-radio>
+                        <el-radio :label="'el-icon-upload2'"><i class="el-icon-upload2"></i></el-radio>
+                        <el-radio :label="'el-icon-download'"><i class="el-icon-download"></i></el-radio>
+                        <el-radio :label="'el-icon-camera-solid'"><i class="el-icon-camera-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-camera'"><i class="el-icon-camera"></i></el-radio>
+                        <el-radio :label="'el-icon-video-camera-solid'"><i class="el-icon-video-camera-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-video-camera'"><i class="el-icon-video-camera"></i></el-radio>
+                        <el-radio :label="'el-icon-message-solid'"><i class="el-icon-message-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-bell'"><i class="el-icon-bell"></i></el-radio>
+                        <el-radio :label="'el-icon-s-cooperation'"><i class="el-icon-s-cooperation"></i></el-radio>
+                        <el-radio :label="'el-icon-s-order'"><i class="el-icon-s-order"></i></el-radio>
+                        <el-radio :label="'el-icon-s-platform'"><i class="el-icon-s-platform"></i></el-radio>
+                        <el-radio :label="'el-icon-s-fold'"><i class="el-icon-s-fold"></i></el-radio>
+                        <el-radio :label="'el-icon-s-unfold'"><i class="el-icon-s-unfold"></i></el-radio>
+                        <el-radio :label="'el-icon-s-operation'"><i class="el-icon-s-operation"></i></el-radio>
+                        <el-radio :label="'el-icon-s-promotion'"><i class="el-icon-s-promotion"></i></el-radio>
+                        <el-radio :label="'el-icon-s-home'"><i class="el-icon-s-home"></i></el-radio>
+                        <el-radio :label="'el-icon-s-release'"><i class="el-icon-s-release"></i></el-radio>
+                        <el-radio :label="'el-icon-s-ticket'"><i class="el-icon-s-ticket"></i></el-radio>
+                        <el-radio :label="'el-icon-s-management'"><i class="el-icon-s-management"></i></el-radio>
+                        <el-radio :label="'el-icon-s-open'"><i class="el-icon-s-open"></i></el-radio>
+                        <el-radio :label="'el-icon-s-shop'"><i class="el-icon-s-shop"></i></el-radio>
+                        <el-radio :label="'el-icon-s-marketing'"><i class="el-icon-s-marketing"></i></el-radio>
+                        <el-radio :label="'el-icon-s-flag'"><i class="el-icon-s-flag"></i></el-radio>
+                        <el-radio :label="'el-icon-s-comment'"><i class="el-icon-s-comment"></i></el-radio>
+                        <el-radio :label="'el-icon-s-finance'"><i class="el-icon-s-finance"></i></el-radio>
+                        <el-radio :label="'el-icon-s-claim'"><i class="el-icon-s-claim"></i></el-radio>
+                        <el-radio :label="'el-icon-s-custom'"><i class="el-icon-s-custom"></i></el-radio>
+                        <el-radio :label="'el-icon-s-opportunity'"><i class="el-icon-s-opportunity"></i></el-radio>
+                        <el-radio :label="'el-icon-s-data'"><i class="el-icon-s-data"></i></el-radio>
+                        <el-radio :label="'el-icon-s-check'"><i class="el-icon-s-check"></i></el-radio>
+                        <el-radio :label="'el-icon-s-grid'"><i class="el-icon-s-grid"></i></el-radio>
+                        <el-radio :label="'el-icon-menu'"><i class="el-icon-menu"></i></el-radio>
+                        <el-radio :label="'el-icon-share'"><i class="el-icon-share"></i></el-radio>
+                        <el-radio :label="'el-icon-d-caret'"><i class="el-icon-d-caret"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-left'"><i class="el-icon-caret-left"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-right'"><i class="el-icon-caret-right"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-bottom'"><i class="el-icon-caret-bottom"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-top'"><i class="el-icon-caret-top"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom-left'"><i class="el-icon-bottom-left"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom-right'"><i class="el-icon-bottom-right"></i></el-radio>
+                        <el-radio :label="'el-icon-back'"><i class="el-icon-back"></i></el-radio>
+                        <el-radio :label="'el-icon-right'"><i class="el-icon-right"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom'"><i class="el-icon-bottom"></i></el-radio>
+                        <el-radio :label="'el-icon-top'"><i class="el-icon-top"></i></el-radio>
+                        <el-radio :label="'el-icon-top-left'"><i class="el-icon-top-left"></i></el-radio>
+                        <el-radio :label="'el-icon-top-right'"><i class="el-icon-top-right"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-left'"><i class="el-icon-arrow-left"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-right'"><i class="el-icon-arrow-right"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-down'"><i class="el-icon-arrow-down"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-up'"><i class="el-icon-arrow-up"></i></el-radio>
+                        <el-radio :label="'el-icon-d-arrow-left'"><i class="el-icon-d-arrow-left"></i></el-radio>
+                        <el-radio :label="'el-icon-d-arrow-right'"><i class="el-icon-d-arrow-right"></i></el-radio>
+                        <el-radio :label="'el-icon-video-pause'"><i class="el-icon-video-pause"></i></el-radio>
+                        <el-radio :label="'el-icon-video-play'"><i class="el-icon-video-play"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh'"><i class="el-icon-refresh"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh-right'"><i class="el-icon-refresh-right"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh-left'"><i class="el-icon-refresh-left"></i></el-radio>
+                        <el-radio :label="'el-icon-finished'"><i class="el-icon-finished"></i></el-radio>
+                        <el-radio :label="'el-icon-sort'"><i class="el-icon-sort"></i></el-radio>
+                        <el-radio :label="'el-icon-sort-up'"><i class="el-icon-sort-up"></i></el-radio>
+                        <el-radio :label="'el-icon-sort-down'"><i class="el-icon-sort-down"></i></el-radio>
+                        <el-radio :label="'el-icon-rank'"><i class="el-icon-rank"></i></el-radio>
+                        <el-radio :label="'el-icon-loading'"><i class="el-icon-loading"></i></el-radio>
+                        <el-radio :label="'el-icon-view'"><i class="el-icon-view"></i></el-radio>
+                        <el-radio :label="'el-icon-c-scale-to-original'"><i class="el-icon-c-scale-to-original"></i></el-radio>
+                        <el-radio :label="'el-icon-date'"><i class="el-icon-date"></i></el-radio>
+                        <el-radio :label="'el-icon-edit'"><i class="el-icon-edit"></i></el-radio>
+                        <el-radio :label="'el-icon-edit-outline'"><i class="el-icon-edit-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-folder'"><i class="el-icon-folder"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-opened'"><i class="el-icon-folder-opened"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-add'"><i class="el-icon-folder-add"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-remove'"><i class="el-icon-folder-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-delete'"><i class="el-icon-folder-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-checked'"><i class="el-icon-folder-checked"></i></el-radio>
+                        <el-radio :label="'el-icon-tickets'"><i class="el-icon-tickets"></i></el-radio>
+                        <el-radio :label="'el-icon-document-remove'"><i class="el-icon-document-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-document-delete'"><i class="el-icon-document-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-document-copy'"><i class="el-icon-document-copy"></i></el-radio>
+                        <el-radio :label="'el-icon-document-checked'"><i class="el-icon-document-checked"></i></el-radio>
+                        <el-radio :label="'el-icon-document'"><i class="el-icon-document"></i></el-radio>
+                        <el-radio :label="'el-icon-document-add'"><i class="el-icon-document-add"></i></el-radio>
+                        <el-radio :label="'el-icon-printer'"><i class="el-icon-printer"></i></el-radio>
+                        <el-radio :label="'el-icon-paperclip'"><i class="el-icon-paperclip"></i></el-radio>
+                        <el-radio :label="'el-icon-takeaway-box'"><i class="el-icon-takeaway-box"></i></el-radio>
+                        <el-radio :label="'el-icon-search'"><i class="el-icon-search"></i></el-radio>
+                        <el-radio :label="'el-icon-monitor'"><i class="el-icon-monitor"></i></el-radio>
+                        <el-radio :label="'el-icon-attract'"><i class="el-icon-attract"></i></el-radio>
+                        <el-radio :label="'el-icon-mobile'"><i class="el-icon-mobile"></i></el-radio>
+                        <el-radio :label="'el-icon-scissors'"><i class="el-icon-scissors"></i></el-radio>
+                        <el-radio :label="'el-icon-umbrella'"><i class="el-icon-umbrella"></i></el-radio>
+                        <el-radio :label="'el-icon-headset'"><i class="el-icon-headset"></i></el-radio>
+                        <el-radio :label="'el-icon-brush'"><i class="el-icon-brush"></i></el-radio>
+                        <el-radio :label="'el-icon-mouse'"><i class="el-icon-mouse"></i></el-radio>
+                        <el-radio :label="'el-icon-coordinate'"><i class="el-icon-coordinate"></i></el-radio>
+                        <el-radio :label="'el-icon-magic-stick'"><i class="el-icon-magic-stick"></i></el-radio>
+                        <el-radio :label="'el-icon-reading'"><i class="el-icon-reading"></i></el-radio>
+                        <el-radio :label="'el-icon-data-line'"><i class="el-icon-data-line"></i></el-radio>
+                        <el-radio :label="'el-icon-data-board'"><i class="el-icon-data-board"></i></el-radio>
+                        <el-radio :label="'el-icon-pie-chart'"><i class="el-icon-pie-chart"></i></el-radio>
+                        <el-radio :label="'el-icon-data-analysis'"><i class="el-icon-data-analysis"></i></el-radio>
+                        <el-radio :label="'el-icon-collection-tag'"><i class="el-icon-collection-tag"></i></el-radio>
+                        <el-radio :label="'el-icon-film'"><i class="el-icon-film"></i></el-radio>
+                        <el-radio :label="'el-icon-suitcase'"><i class="el-icon-suitcase"></i></el-radio>
+                        <el-radio :label="'el-icon-suitcase-1'"><i class="el-icon-suitcase-1"></i></el-radio>
+                        <el-radio :label="'el-icon-receiving'"><i class="el-icon-receiving"></i></el-radio>
+                        <el-radio :label="'el-icon-collection'"><i class="el-icon-collection"></i></el-radio>
+                        <el-radio :label="'el-icon-files'"><i class="el-icon-files"></i></el-radio>
+                        <el-radio :label="'el-icon-notebook-1'"><i class="el-icon-notebook-1"></i></el-radio>
+                        <el-radio :label="'el-icon-notebook-2'"><i class="el-icon-notebook-2"></i></el-radio>
+                        <el-radio :label="'el-icon-toilet-paper'"><i class="el-icon-toilet-paper"></i></el-radio>
+                        <el-radio :label="'el-icon-office-building'"><i class="el-icon-office-building"></i></el-radio>
+                        <el-radio :label="'el-icon-school'"><i class="el-icon-school"></i></el-radio>
+                        <el-radio :label="'el-icon-table-lamp'"><i class="el-icon-table-lamp"></i></el-radio>
+                        <el-radio :label="'el-icon-house'"><i class="el-icon-house"></i></el-radio>
+                        <el-radio :label="'el-icon-no-smoking'"><i class="el-icon-no-smoking"></i></el-radio>
+                        <el-radio :label="'el-icon-smoking'"><i class="el-icon-smoking"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-full'"><i class="el-icon-shopping-cart-full"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-1'"><i class="el-icon-shopping-cart-1"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-2'"><i class="el-icon-shopping-cart-2"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-bag-1'"><i class="el-icon-shopping-bag-1"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-bag-2'"><i class="el-icon-shopping-bag-2"></i></el-radio>
+                        <el-radio :label="'el-icon-sold-out'"><i class="el-icon-sold-out"></i></el-radio>
+                        <el-radio :label="'el-icon-sell'"><i class="el-icon-sell"></i></el-radio>
+                        <el-radio :label="'el-icon-present'"><i class="el-icon-present"></i></el-radio>
+                        <el-radio :label="'el-icon-box'"><i class="el-icon-box"></i></el-radio>
+                        <el-radio :label="'el-icon-bank-card'"><i class="el-icon-bank-card"></i></el-radio>
+                        <el-radio :label="'el-icon-money'"><i class="el-icon-money"></i></el-radio>
+                        <el-radio :label="'el-icon-coin'"><i class="el-icon-coin"></i></el-radio>
+                        <el-radio :label="'el-icon-wallet'"><i class="el-icon-wallet"></i></el-radio>
+                        <el-radio :label="'el-icon-discount'"><i class="el-icon-discount"></i></el-radio>
+                        <el-radio :label="'el-icon-price-tag'"><i class="el-icon-price-tag"></i></el-radio>
+                        <el-radio :label="'el-icon-news'"><i class="el-icon-news"></i></el-radio>
+                        <el-radio :label="'el-icon-guide'"><i class="el-icon-guide"></i></el-radio>
+                        <el-radio :label="'el-icon-male'"><i class="el-icon-male"></i></el-radio>
+                        <el-radio :label="'el-icon-female'"><i class="el-icon-female"></i></el-radio>
+                        <el-radio :label="'el-icon-thumb'"><i class="el-icon-thumb"></i></el-radio>
+                        <el-radio :label="'el-icon-cpu'"><i class="el-icon-cpu"></i></el-radio>
+                        <el-radio :label="'el-icon-link'"><i class="el-icon-link"></i></el-radio>
+                        <el-radio :label="'el-icon-connection'"><i class="el-icon-connection"></i></el-radio>
+                        <el-radio :label="'el-icon-open'"><i class="el-icon-open"></i></el-radio>
+                        <el-radio :label="'el-icon-turn-off'"><i class="el-icon-turn-off"></i></el-radio>
+                        <el-radio :label="'el-icon-set-up'"><i class="el-icon-set-up"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-round'"><i class="el-icon-chat-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-line-round'"><i class="el-icon-chat-line-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-square'"><i class="el-icon-chat-square"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-dot-round'"><i class="el-icon-chat-dot-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-dot-square'"><i class="el-icon-chat-dot-square"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-line-square'"><i class="el-icon-chat-line-square"></i></el-radio>
+                        <el-radio :label="'el-icon-message'"><i class="el-icon-message"></i></el-radio>
+                        <el-radio :label="'el-icon-postcard'"><i class="el-icon-postcard"></i></el-radio>
+                        <el-radio :label="'el-icon-position'"><i class="el-icon-position"></i></el-radio>
+                        <el-radio :label="'el-icon-turn-off-microphone'"><i class="el-icon-turn-off-microphone"></i></el-radio>
+                        <el-radio :label="'el-icon-microphone'"><i class="el-icon-microphone"></i></el-radio>
+                        <el-radio :label="'el-icon-close-notification'"><i class="el-icon-close-notification"></i></el-radio>
+                        <el-radio :label="'el-icon-bangzhu'"><i class="el-icon-bangzhu"></i></el-radio>
+                        <el-radio :label="'el-icon-time'"><i class="el-icon-time"></i></el-radio>
+                        <el-radio :label="'el-icon-odometer'"><i class="el-icon-odometer"></i></el-radio>
+                        <el-radio :label="'el-icon-crop'"><i class="el-icon-crop"></i></el-radio>
+                        <el-radio :label="'el-icon-aim'"><i class="el-icon-aim"></i></el-radio>
+                        <el-radio :label="'el-icon-switch-button'"><i class="el-icon-switch-button"></i></el-radio>
+                        <el-radio :label="'el-icon-full-screen'"><i class="el-icon-full-screen"></i></el-radio>
+                        <el-radio :label="'el-icon-copy-document'"><i class="el-icon-copy-document"></i></el-radio>
+                        <el-radio :label="'el-icon-mic'"><i class="el-icon-mic"></i></el-radio>
+                        <el-radio :label="'el-icon-stopwatch'"><i class="el-icon-stopwatch"></i></el-radio>
+                        <el-radio :label="'el-icon-medal-1'"><i class="el-icon-medal-1"></i></el-radio>
+                        <el-radio :label="'el-icon-medal'"><i class="el-icon-medal"></i></el-radio>
+                        <el-radio :label="'el-icon-trophy'"><i class="el-icon-trophy"></i></el-radio>
+                        <el-radio :label="'el-icon-trophy-1'"><i class="el-icon-trophy-1"></i></el-radio>
+                        <el-radio :label="'el-icon-first-aid-kit'"><i class="el-icon-first-aid-kit"></i></el-radio>
+                        <el-radio :label="'el-icon-discover'"><i class="el-icon-discover"></i></el-radio>
+                        <el-radio :label="'el-icon-place'"><i class="el-icon-place"></i></el-radio>
+                        <el-radio :label="'el-icon-location'"><i class="el-icon-location"></i></el-radio>
+                        <el-radio :label="'el-icon-location-outline'"><i class="el-icon-location-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-location-information'"><i class="el-icon-location-information"></i></el-radio>
+                        <el-radio :label="'el-icon-add-location'"><i class="el-icon-add-location"></i></el-radio>
+                        <el-radio :label="'el-icon-delete-location'"><i class="el-icon-delete-location"></i></el-radio>
+                        <el-radio :label="'el-icon-map-location'"><i class="el-icon-map-location"></i></el-radio>
+                        <el-radio :label="'el-icon-alarm-clock'"><i class="el-icon-alarm-clock"></i></el-radio>
+                        <el-radio :label="'el-icon-timer'"><i class="el-icon-timer"></i></el-radio>
+                        <el-radio :label="'el-icon-watch-1'"><i class="el-icon-watch-1"></i></el-radio>
+                        <el-radio :label="'el-icon-watch'"><i class="el-icon-watch"></i></el-radio>
+                        <el-radio :label="'el-icon-lock'"><i class="el-icon-lock"></i></el-radio>
+                        <el-radio :label="'el-icon-unlock'"><i class="el-icon-unlock"></i></el-radio>
+                        <el-radio :label="'el-icon-key'"><i class="el-icon-key"></i></el-radio>
+                        <el-radio :label="'el-icon-service'"><i class="el-icon-service"></i></el-radio>
+                        <el-radio :label="'el-icon-mobile-phone'"><i class="el-icon-mobile-phone"></i></el-radio>
+                        <el-radio :label="'el-icon-bicycle'"><i class="el-icon-bicycle"></i></el-radio>
+                        <el-radio :label="'el-icon-truck'"><i class="el-icon-truck"></i></el-radio>
+                        <el-radio :label="'el-icon-ship'"><i class="el-icon-ship"></i></el-radio>
+                        <el-radio :label="'el-icon-basketball'"><i class="el-icon-basketball"></i></el-radio>
+                        <el-radio :label="'el-icon-football'"><i class="el-icon-football"></i></el-radio>
+                        <el-radio :label="'el-icon-soccer'"><i class="el-icon-soccer"></i></el-radio>
+                        <el-radio :label="'el-icon-baseball'"><i class="el-icon-baseball"></i></el-radio>
+                        <el-radio :label="'el-icon-wind-power'"><i class="el-icon-wind-power"></i></el-radio>
+                        <el-radio :label="'el-icon-light-rain'"><i class="el-icon-light-rain"></i></el-radio>
+                        <el-radio :label="'el-icon-lightning'"><i class="el-icon-lightning"></i></el-radio>
+                        <el-radio :label="'el-icon-heavy-rain'"><i class="el-icon-heavy-rain"></i></el-radio>
+                        <el-radio :label="'el-icon-sunrise'"><i class="el-icon-sunrise"></i></el-radio>
+                        <el-radio :label="'el-icon-sunrise-1'"><i class="el-icon-sunrise-1"></i></el-radio>
+                        <el-radio :label="'el-icon-sunset'"><i class="el-icon-sunset"></i></el-radio>
+                        <el-radio :label="'el-icon-sunny'"><i class="el-icon-sunny"></i></el-radio>
+                        <el-radio :label="'el-icon-cloudy'"><i class="el-icon-cloudy"></i></el-radio>
+                        <el-radio :label="'el-icon-partly-cloudy'"><i class="el-icon-partly-cloudy"></i></el-radio>
+                        <el-radio :label="'el-icon-cloudy-and-sunny'"><i class="el-icon-cloudy-and-sunny"></i></el-radio>
+                        <el-radio :label="'el-icon-moon'"><i class="el-icon-moon"></i></el-radio>
+                        <el-radio :label="'el-icon-moon-night'"><i class="el-icon-moon-night"></i></el-radio>
+                        <el-radio :label="'el-icon-dish'"><i class="el-icon-dish"></i></el-radio>
+                        <el-radio :label="'el-icon-dish-1'"><i class="el-icon-dish-1"></i></el-radio>
+                        <el-radio :label="'el-icon-food'"><i class="el-icon-food"></i></el-radio>
+                        <el-radio :label="'el-icon-chicken'"><i class="el-icon-chicken"></i></el-radio>
+                        <el-radio :label="'el-icon-fork-spoon'"><i class="el-icon-fork-spoon"></i></el-radio>
+                        <el-radio :label="'el-icon-knife-fork'"><i class="el-icon-knife-fork"></i></el-radio>
+                        <el-radio :label="'el-icon-burger'"><i class="el-icon-burger"></i></el-radio>
+                        <el-radio :label="'el-icon-tableware'"><i class="el-icon-tableware"></i></el-radio>
+                        <el-radio :label="'el-icon-sugar'"><i class="el-icon-sugar"></i></el-radio>
+                        <el-radio :label="'el-icon-dessert'"><i class="el-icon-dessert"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream'"><i class="el-icon-ice-cream"></i></el-radio>
+                        <el-radio :label="'el-icon-hot-water'"><i class="el-icon-hot-water"></i></el-radio>
+                        <el-radio :label="'el-icon-water-cup'"><i class="el-icon-water-cup"></i></el-radio>
+                        <el-radio :label="'el-icon-coffee-cup'"><i class="el-icon-coffee-cup"></i></el-radio>
+                        <el-radio :label="'el-icon-cold-drink'"><i class="el-icon-cold-drink"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet'"><i class="el-icon-goblet"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-full'"><i class="el-icon-goblet-full"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-square'"><i class="el-icon-goblet-square"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-square-full'"><i class="el-icon-goblet-square-full"></i></el-radio>
+                        <el-radio :label="'el-icon-refrigerator'"><i class="el-icon-refrigerator"></i></el-radio>
+                        <el-radio :label="'el-icon-grape'"><i class="el-icon-grape"></i></el-radio>
+                        <el-radio :label="'el-icon-watermelon'"><i class="el-icon-watermelon"></i></el-radio>
+                        <el-radio :label="'el-icon-cherry'"><i class="el-icon-cherry"></i></el-radio>
+                        <el-radio :label="'el-icon-apple'"><i class="el-icon-apple"></i></el-radio>
+                        <el-radio :label="'el-icon-pear'"><i class="el-icon-pear"></i></el-radio>
+                        <el-radio :label="'el-icon-orange'"><i class="el-icon-orange"></i></el-radio>
+                        <el-radio :label="'el-icon-coffee'"><i class="el-icon-coffee"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-tea'"><i class="el-icon-ice-tea"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-drink'"><i class="el-icon-ice-drink"></i></el-radio>
+                        <el-radio :label="'el-icon-milk-tea'"><i class="el-icon-milk-tea"></i></el-radio>
+                        <el-radio :label="'el-icon-potato-strips'"><i class="el-icon-potato-strips"></i></el-radio>
+                        <el-radio :label="'el-icon-lollipop'"><i class="el-icon-lollipop"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream-square'"><i class="el-icon-ice-cream-square"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream-round'"><i class="el-icon-ice-cream-round"></i></el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -96,44 +366,364 @@
 
 
             <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible1 = false;resetForm('parentUrlForm');resetForm('parentUrlForm')">取 消</el-button>
+                    <el-button @click="cancel()">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑资源-->
         <el-dialog
-                title="编辑用户"
+                title="编辑资源"
                 :visible.sync="centerDialogVisible2"
                 width="50%"
                 @close="handleEditClose"
                 center>
 
-            <el-form :model="editForm" :rules="rules" ref="urlForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="用户名" prop="username" required>
-                    <el-input v-model="editForm.username"></el-input>
+            <div style="margin-bottom: 15px;">
+                <span>&nbsp;&nbsp;是否是父节点&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <el-radio-group v-model="isParent" @change="change()">
+                    <el-radio :label="1">是</el-radio>
+                    <el-radio :label="0">否</el-radio>
+                </el-radio-group>
+            </div>
+
+
+            <!--子节点-->
+            <el-form :model="editChildrenUrlForm" :rules="rules" ref="editChildrenUrlForm" label-width="100px" class="demo-urlForm" v-show="children">
+
+                <el-form-item label="资源名称" prop="name" required>
+                    <el-input v-model="editChildrenUrlForm.name" placeholder="推荐使用中文"></el-input>
+                </el-form-item>
+
+                <el-form-item label="所属父节点" prop="parentId" >
+                    <el-select v-model="editChildrenUrlForm.parentId" placeholder="请选择">
+                        <el-option
+                                v-for="item in parentOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            <span style="float: left;color: #8492a6; font-size: 13px">{{ item.id }}</span>
+                            <span style="float: right">{{ item.name }}</span>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
 
 
-                <el-form-item label="创建时间" required>
-                    <el-col :span="11">
-                        <el-form-item prop="createtime">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="editForm.createtime"
-                                            style="width: 100%;"></el-date-picker>
-                        </el-form-item>
-                    </el-col>
+
+                <el-form-item label="资源路径" prop="url" required >
+                    <el-input v-model="editChildrenUrlForm.url" placeholder="例如 xxx.html"></el-input>
                 </el-form-item>
 
 
                 <el-form-item>
-                    <el-button type="primary" @click="submitEditForm('ruleForm')">立即修改</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button type="primary" @click="submitEditForm('editChildrenUrlForm')">立即创建</el-button>
+                    <el-button @click="resetForm('editChildrenUrlForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!--父节点-->
+            <el-form :model="editParentUrlForm" :rules="rules2" ref="editParentUrlForm" label-width="100px" class="demo-urlForm" v-show="parent">
+
+                <el-form-item label="资源名称" prop="name" required>
+                    <el-input v-model="editParentUrlForm.name" placeholder="推荐使用中文"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="选择图标" prop="icon">
+                    <el-radio-group v-model="editParentUrlForm.icon" >
+                        <el-radio :label="'el-icon-platform-eleme'"><i class="el-icon-platform-eleme"></i></el-radio>
+                        <el-radio :label="'el-icon-eleme'"><i class="el-icon-eleme"></i></el-radio>
+                        <el-radio :label="'el-icon-delete-solid'"><i class="el-icon-delete-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-delete'"><i class="el-icon-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-s-tools'"><i class="el-icon-s-tools"></i></el-radio>
+                        <el-radio :label="'el-icon-setting'"><i class="el-icon-setting"></i></el-radio>
+                        <el-radio :label="'el-icon-user-solid'"><i class="el-icon-user-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-user'"><i class="el-icon-user"></i></el-radio>
+                        <el-radio :label="'el-icon-phone'"><i class="el-icon-phone"></i></el-radio>
+                        <el-radio :label="'el-icon-phone-outline'"><i class="el-icon-phone-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-more'"><i class="el-icon-more"></i></el-radio>
+                        <el-radio :label="'el-icon-more-outline'"><i class="el-icon-more-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-star-on'"><i class="el-icon-star-on"></i></el-radio>
+                        <el-radio :label="'el-icon-star-off'"><i class="el-icon-star-off"></i></el-radio>
+                        <el-radio :label="'el-icon-s-goods'"><i class="el-icon-s-goods"></i></el-radio>
+                        <el-radio :label="'el-icon-goods'"><i class="el-icon-goods"></i></el-radio>
+                        <el-radio :label="'el-icon-warning'"><i class="el-icon-warning"></i></el-radio>
+                        <el-radio :label="'el-icon-warning-outline'"><i class="el-icon-warning-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-question'"><i class="el-icon-question"></i></el-radio>
+                        <el-radio :label="'el-icon-info'"><i class="el-icon-info"></i></el-radio>
+                        <el-radio :label="'el-icon-remove'"><i class="el-icon-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-plus'"><i class="el-icon-circle-plus"></i></el-radio>
+                        <el-radio :label="'el-icon-success'"><i class="el-icon-success"></i></el-radio>
+                        <el-radio :label="'el-icon-error'"><i class="el-icon-error"></i></el-radio>
+                        <el-radio :label="'el-icon-zoom-in'"><i class="el-icon-zoom-in"></i></el-radio>
+                        <el-radio :label="'el-icon-zoom-out'"><i class="el-icon-zoom-out"></i></el-radio>
+                        <el-radio :label="'el-icon-remove-outline'"><i class="el-icon-remove-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-plus-outline'"><i class="el-icon-circle-plus-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-check'"><i class="el-icon-circle-check"></i></el-radio>
+                        <el-radio :label="'el-icon-circle-close'"><i class="el-icon-circle-close"></i></el-radio>
+                        <el-radio :label="'el-icon-s-help'"><i class="el-icon-s-help"></i></el-radio>
+                        <el-radio :label="'el-icon-help'"><i class="el-icon-help"></i></el-radio>
+                        <el-radio :label="'el-icon-minus'"><i class="el-icon-minus"></i></el-radio>
+                        <el-radio :label="'el-icon-plus'"><i class="el-icon-plus"></i></el-radio>
+                        <el-radio :label="'el-icon-check'"><i class="el-icon-check"></i></el-radio>
+                        <el-radio :label="'el-icon-close'"><i class="el-icon-close"></i></el-radio>
+                        <el-radio :label="'el-icon-picture'"><i class="el-icon-picture"></i></el-radio>
+                        <el-radio :label="'el-icon-picture-outline'"><i class="el-icon-picture-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-picture-outline-round'"><i class="el-icon-picture-outline-round"></i></el-radio>
+                        <el-radio :label="'el-icon-upload'"><i class="el-icon-upload"></i></el-radio>
+                        <el-radio :label="'el-icon-upload2'"><i class="el-icon-upload2"></i></el-radio>
+                        <el-radio :label="'el-icon-download'"><i class="el-icon-download"></i></el-radio>
+                        <el-radio :label="'el-icon-camera-solid'"><i class="el-icon-camera-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-camera'"><i class="el-icon-camera"></i></el-radio>
+                        <el-radio :label="'el-icon-video-camera-solid'"><i class="el-icon-video-camera-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-video-camera'"><i class="el-icon-video-camera"></i></el-radio>
+                        <el-radio :label="'el-icon-message-solid'"><i class="el-icon-message-solid"></i></el-radio>
+                        <el-radio :label="'el-icon-bell'"><i class="el-icon-bell"></i></el-radio>
+                        <el-radio :label="'el-icon-s-cooperation'"><i class="el-icon-s-cooperation"></i></el-radio>
+                        <el-radio :label="'el-icon-s-order'"><i class="el-icon-s-order"></i></el-radio>
+                        <el-radio :label="'el-icon-s-platform'"><i class="el-icon-s-platform"></i></el-radio>
+                        <el-radio :label="'el-icon-s-fold'"><i class="el-icon-s-fold"></i></el-radio>
+                        <el-radio :label="'el-icon-s-unfold'"><i class="el-icon-s-unfold"></i></el-radio>
+                        <el-radio :label="'el-icon-s-operation'"><i class="el-icon-s-operation"></i></el-radio>
+                        <el-radio :label="'el-icon-s-promotion'"><i class="el-icon-s-promotion"></i></el-radio>
+                        <el-radio :label="'el-icon-s-home'"><i class="el-icon-s-home"></i></el-radio>
+                        <el-radio :label="'el-icon-s-release'"><i class="el-icon-s-release"></i></el-radio>
+                        <el-radio :label="'el-icon-s-ticket'"><i class="el-icon-s-ticket"></i></el-radio>
+                        <el-radio :label="'el-icon-s-management'"><i class="el-icon-s-management"></i></el-radio>
+                        <el-radio :label="'el-icon-s-open'"><i class="el-icon-s-open"></i></el-radio>
+                        <el-radio :label="'el-icon-s-shop'"><i class="el-icon-s-shop"></i></el-radio>
+                        <el-radio :label="'el-icon-s-marketing'"><i class="el-icon-s-marketing"></i></el-radio>
+                        <el-radio :label="'el-icon-s-flag'"><i class="el-icon-s-flag"></i></el-radio>
+                        <el-radio :label="'el-icon-s-comment'"><i class="el-icon-s-comment"></i></el-radio>
+                        <el-radio :label="'el-icon-s-finance'"><i class="el-icon-s-finance"></i></el-radio>
+                        <el-radio :label="'el-icon-s-claim'"><i class="el-icon-s-claim"></i></el-radio>
+                        <el-radio :label="'el-icon-s-custom'"><i class="el-icon-s-custom"></i></el-radio>
+                        <el-radio :label="'el-icon-s-opportunity'"><i class="el-icon-s-opportunity"></i></el-radio>
+                        <el-radio :label="'el-icon-s-data'"><i class="el-icon-s-data"></i></el-radio>
+                        <el-radio :label="'el-icon-s-check'"><i class="el-icon-s-check"></i></el-radio>
+                        <el-radio :label="'el-icon-s-grid'"><i class="el-icon-s-grid"></i></el-radio>
+                        <el-radio :label="'el-icon-menu'"><i class="el-icon-menu"></i></el-radio>
+                        <el-radio :label="'el-icon-share'"><i class="el-icon-share"></i></el-radio>
+                        <el-radio :label="'el-icon-d-caret'"><i class="el-icon-d-caret"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-left'"><i class="el-icon-caret-left"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-right'"><i class="el-icon-caret-right"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-bottom'"><i class="el-icon-caret-bottom"></i></el-radio>
+                        <el-radio :label="'el-icon-caret-top'"><i class="el-icon-caret-top"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom-left'"><i class="el-icon-bottom-left"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom-right'"><i class="el-icon-bottom-right"></i></el-radio>
+                        <el-radio :label="'el-icon-back'"><i class="el-icon-back"></i></el-radio>
+                        <el-radio :label="'el-icon-right'"><i class="el-icon-right"></i></el-radio>
+                        <el-radio :label="'el-icon-bottom'"><i class="el-icon-bottom"></i></el-radio>
+                        <el-radio :label="'el-icon-top'"><i class="el-icon-top"></i></el-radio>
+                        <el-radio :label="'el-icon-top-left'"><i class="el-icon-top-left"></i></el-radio>
+                        <el-radio :label="'el-icon-top-right'"><i class="el-icon-top-right"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-left'"><i class="el-icon-arrow-left"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-right'"><i class="el-icon-arrow-right"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-down'"><i class="el-icon-arrow-down"></i></el-radio>
+                        <el-radio :label="'el-icon-arrow-up'"><i class="el-icon-arrow-up"></i></el-radio>
+                        <el-radio :label="'el-icon-d-arrow-left'"><i class="el-icon-d-arrow-left"></i></el-radio>
+                        <el-radio :label="'el-icon-d-arrow-right'"><i class="el-icon-d-arrow-right"></i></el-radio>
+                        <el-radio :label="'el-icon-video-pause'"><i class="el-icon-video-pause"></i></el-radio>
+                        <el-radio :label="'el-icon-video-play'"><i class="el-icon-video-play"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh'"><i class="el-icon-refresh"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh-right'"><i class="el-icon-refresh-right"></i></el-radio>
+                        <el-radio :label="'el-icon-refresh-left'"><i class="el-icon-refresh-left"></i></el-radio>
+                        <el-radio :label="'el-icon-finished'"><i class="el-icon-finished"></i></el-radio>
+                        <el-radio :label="'el-icon-sort'"><i class="el-icon-sort"></i></el-radio>
+                        <el-radio :label="'el-icon-sort-up'"><i class="el-icon-sort-up"></i></el-radio>
+                        <el-radio :label="'el-icon-sort-down'"><i class="el-icon-sort-down"></i></el-radio>
+                        <el-radio :label="'el-icon-rank'"><i class="el-icon-rank"></i></el-radio>
+                        <el-radio :label="'el-icon-loading'"><i class="el-icon-loading"></i></el-radio>
+                        <el-radio :label="'el-icon-view'"><i class="el-icon-view"></i></el-radio>
+                        <el-radio :label="'el-icon-c-scale-to-original'"><i class="el-icon-c-scale-to-original"></i></el-radio>
+                        <el-radio :label="'el-icon-date'"><i class="el-icon-date"></i></el-radio>
+                        <el-radio :label="'el-icon-edit'"><i class="el-icon-edit"></i></el-radio>
+                        <el-radio :label="'el-icon-edit-outline'"><i class="el-icon-edit-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-folder'"><i class="el-icon-folder"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-opened'"><i class="el-icon-folder-opened"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-add'"><i class="el-icon-folder-add"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-remove'"><i class="el-icon-folder-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-delete'"><i class="el-icon-folder-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-folder-checked'"><i class="el-icon-folder-checked"></i></el-radio>
+                        <el-radio :label="'el-icon-tickets'"><i class="el-icon-tickets"></i></el-radio>
+                        <el-radio :label="'el-icon-document-remove'"><i class="el-icon-document-remove"></i></el-radio>
+                        <el-radio :label="'el-icon-document-delete'"><i class="el-icon-document-delete"></i></el-radio>
+                        <el-radio :label="'el-icon-document-copy'"><i class="el-icon-document-copy"></i></el-radio>
+                        <el-radio :label="'el-icon-document-checked'"><i class="el-icon-document-checked"></i></el-radio>
+                        <el-radio :label="'el-icon-document'"><i class="el-icon-document"></i></el-radio>
+                        <el-radio :label="'el-icon-document-add'"><i class="el-icon-document-add"></i></el-radio>
+                        <el-radio :label="'el-icon-printer'"><i class="el-icon-printer"></i></el-radio>
+                        <el-radio :label="'el-icon-paperclip'"><i class="el-icon-paperclip"></i></el-radio>
+                        <el-radio :label="'el-icon-takeaway-box'"><i class="el-icon-takeaway-box"></i></el-radio>
+                        <el-radio :label="'el-icon-search'"><i class="el-icon-search"></i></el-radio>
+                        <el-radio :label="'el-icon-monitor'"><i class="el-icon-monitor"></i></el-radio>
+                        <el-radio :label="'el-icon-attract'"><i class="el-icon-attract"></i></el-radio>
+                        <el-radio :label="'el-icon-mobile'"><i class="el-icon-mobile"></i></el-radio>
+                        <el-radio :label="'el-icon-scissors'"><i class="el-icon-scissors"></i></el-radio>
+                        <el-radio :label="'el-icon-umbrella'"><i class="el-icon-umbrella"></i></el-radio>
+                        <el-radio :label="'el-icon-headset'"><i class="el-icon-headset"></i></el-radio>
+                        <el-radio :label="'el-icon-brush'"><i class="el-icon-brush"></i></el-radio>
+                        <el-radio :label="'el-icon-mouse'"><i class="el-icon-mouse"></i></el-radio>
+                        <el-radio :label="'el-icon-coordinate'"><i class="el-icon-coordinate"></i></el-radio>
+                        <el-radio :label="'el-icon-magic-stick'"><i class="el-icon-magic-stick"></i></el-radio>
+                        <el-radio :label="'el-icon-reading'"><i class="el-icon-reading"></i></el-radio>
+                        <el-radio :label="'el-icon-data-line'"><i class="el-icon-data-line"></i></el-radio>
+                        <el-radio :label="'el-icon-data-board'"><i class="el-icon-data-board"></i></el-radio>
+                        <el-radio :label="'el-icon-pie-chart'"><i class="el-icon-pie-chart"></i></el-radio>
+                        <el-radio :label="'el-icon-data-analysis'"><i class="el-icon-data-analysis"></i></el-radio>
+                        <el-radio :label="'el-icon-collection-tag'"><i class="el-icon-collection-tag"></i></el-radio>
+                        <el-radio :label="'el-icon-film'"><i class="el-icon-film"></i></el-radio>
+                        <el-radio :label="'el-icon-suitcase'"><i class="el-icon-suitcase"></i></el-radio>
+                        <el-radio :label="'el-icon-suitcase-1'"><i class="el-icon-suitcase-1"></i></el-radio>
+                        <el-radio :label="'el-icon-receiving'"><i class="el-icon-receiving"></i></el-radio>
+                        <el-radio :label="'el-icon-collection'"><i class="el-icon-collection"></i></el-radio>
+                        <el-radio :label="'el-icon-files'"><i class="el-icon-files"></i></el-radio>
+                        <el-radio :label="'el-icon-notebook-1'"><i class="el-icon-notebook-1"></i></el-radio>
+                        <el-radio :label="'el-icon-notebook-2'"><i class="el-icon-notebook-2"></i></el-radio>
+                        <el-radio :label="'el-icon-toilet-paper'"><i class="el-icon-toilet-paper"></i></el-radio>
+                        <el-radio :label="'el-icon-office-building'"><i class="el-icon-office-building"></i></el-radio>
+                        <el-radio :label="'el-icon-school'"><i class="el-icon-school"></i></el-radio>
+                        <el-radio :label="'el-icon-table-lamp'"><i class="el-icon-table-lamp"></i></el-radio>
+                        <el-radio :label="'el-icon-house'"><i class="el-icon-house"></i></el-radio>
+                        <el-radio :label="'el-icon-no-smoking'"><i class="el-icon-no-smoking"></i></el-radio>
+                        <el-radio :label="'el-icon-smoking'"><i class="el-icon-smoking"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-full'"><i class="el-icon-shopping-cart-full"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-1'"><i class="el-icon-shopping-cart-1"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-cart-2'"><i class="el-icon-shopping-cart-2"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-bag-1'"><i class="el-icon-shopping-bag-1"></i></el-radio>
+                        <el-radio :label="'el-icon-shopping-bag-2'"><i class="el-icon-shopping-bag-2"></i></el-radio>
+                        <el-radio :label="'el-icon-sold-out'"><i class="el-icon-sold-out"></i></el-radio>
+                        <el-radio :label="'el-icon-sell'"><i class="el-icon-sell"></i></el-radio>
+                        <el-radio :label="'el-icon-present'"><i class="el-icon-present"></i></el-radio>
+                        <el-radio :label="'el-icon-box'"><i class="el-icon-box"></i></el-radio>
+                        <el-radio :label="'el-icon-bank-card'"><i class="el-icon-bank-card"></i></el-radio>
+                        <el-radio :label="'el-icon-money'"><i class="el-icon-money"></i></el-radio>
+                        <el-radio :label="'el-icon-coin'"><i class="el-icon-coin"></i></el-radio>
+                        <el-radio :label="'el-icon-wallet'"><i class="el-icon-wallet"></i></el-radio>
+                        <el-radio :label="'el-icon-discount'"><i class="el-icon-discount"></i></el-radio>
+                        <el-radio :label="'el-icon-price-tag'"><i class="el-icon-price-tag"></i></el-radio>
+                        <el-radio :label="'el-icon-news'"><i class="el-icon-news"></i></el-radio>
+                        <el-radio :label="'el-icon-guide'"><i class="el-icon-guide"></i></el-radio>
+                        <el-radio :label="'el-icon-male'"><i class="el-icon-male"></i></el-radio>
+                        <el-radio :label="'el-icon-female'"><i class="el-icon-female"></i></el-radio>
+                        <el-radio :label="'el-icon-thumb'"><i class="el-icon-thumb"></i></el-radio>
+                        <el-radio :label="'el-icon-cpu'"><i class="el-icon-cpu"></i></el-radio>
+                        <el-radio :label="'el-icon-link'"><i class="el-icon-link"></i></el-radio>
+                        <el-radio :label="'el-icon-connection'"><i class="el-icon-connection"></i></el-radio>
+                        <el-radio :label="'el-icon-open'"><i class="el-icon-open"></i></el-radio>
+                        <el-radio :label="'el-icon-turn-off'"><i class="el-icon-turn-off"></i></el-radio>
+                        <el-radio :label="'el-icon-set-up'"><i class="el-icon-set-up"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-round'"><i class="el-icon-chat-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-line-round'"><i class="el-icon-chat-line-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-square'"><i class="el-icon-chat-square"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-dot-round'"><i class="el-icon-chat-dot-round"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-dot-square'"><i class="el-icon-chat-dot-square"></i></el-radio>
+                        <el-radio :label="'el-icon-chat-line-square'"><i class="el-icon-chat-line-square"></i></el-radio>
+                        <el-radio :label="'el-icon-message'"><i class="el-icon-message"></i></el-radio>
+                        <el-radio :label="'el-icon-postcard'"><i class="el-icon-postcard"></i></el-radio>
+                        <el-radio :label="'el-icon-position'"><i class="el-icon-position"></i></el-radio>
+                        <el-radio :label="'el-icon-turn-off-microphone'"><i class="el-icon-turn-off-microphone"></i></el-radio>
+                        <el-radio :label="'el-icon-microphone'"><i class="el-icon-microphone"></i></el-radio>
+                        <el-radio :label="'el-icon-close-notification'"><i class="el-icon-close-notification"></i></el-radio>
+                        <el-radio :label="'el-icon-bangzhu'"><i class="el-icon-bangzhu"></i></el-radio>
+                        <el-radio :label="'el-icon-time'"><i class="el-icon-time"></i></el-radio>
+                        <el-radio :label="'el-icon-odometer'"><i class="el-icon-odometer"></i></el-radio>
+                        <el-radio :label="'el-icon-crop'"><i class="el-icon-crop"></i></el-radio>
+                        <el-radio :label="'el-icon-aim'"><i class="el-icon-aim"></i></el-radio>
+                        <el-radio :label="'el-icon-switch-button'"><i class="el-icon-switch-button"></i></el-radio>
+                        <el-radio :label="'el-icon-full-screen'"><i class="el-icon-full-screen"></i></el-radio>
+                        <el-radio :label="'el-icon-copy-document'"><i class="el-icon-copy-document"></i></el-radio>
+                        <el-radio :label="'el-icon-mic'"><i class="el-icon-mic"></i></el-radio>
+                        <el-radio :label="'el-icon-stopwatch'"><i class="el-icon-stopwatch"></i></el-radio>
+                        <el-radio :label="'el-icon-medal-1'"><i class="el-icon-medal-1"></i></el-radio>
+                        <el-radio :label="'el-icon-medal'"><i class="el-icon-medal"></i></el-radio>
+                        <el-radio :label="'el-icon-trophy'"><i class="el-icon-trophy"></i></el-radio>
+                        <el-radio :label="'el-icon-trophy-1'"><i class="el-icon-trophy-1"></i></el-radio>
+                        <el-radio :label="'el-icon-first-aid-kit'"><i class="el-icon-first-aid-kit"></i></el-radio>
+                        <el-radio :label="'el-icon-discover'"><i class="el-icon-discover"></i></el-radio>
+                        <el-radio :label="'el-icon-place'"><i class="el-icon-place"></i></el-radio>
+                        <el-radio :label="'el-icon-location'"><i class="el-icon-location"></i></el-radio>
+                        <el-radio :label="'el-icon-location-outline'"><i class="el-icon-location-outline"></i></el-radio>
+                        <el-radio :label="'el-icon-location-information'"><i class="el-icon-location-information"></i></el-radio>
+                        <el-radio :label="'el-icon-add-location'"><i class="el-icon-add-location"></i></el-radio>
+                        <el-radio :label="'el-icon-delete-location'"><i class="el-icon-delete-location"></i></el-radio>
+                        <el-radio :label="'el-icon-map-location'"><i class="el-icon-map-location"></i></el-radio>
+                        <el-radio :label="'el-icon-alarm-clock'"><i class="el-icon-alarm-clock"></i></el-radio>
+                        <el-radio :label="'el-icon-timer'"><i class="el-icon-timer"></i></el-radio>
+                        <el-radio :label="'el-icon-watch-1'"><i class="el-icon-watch-1"></i></el-radio>
+                        <el-radio :label="'el-icon-watch'"><i class="el-icon-watch"></i></el-radio>
+                        <el-radio :label="'el-icon-lock'"><i class="el-icon-lock"></i></el-radio>
+                        <el-radio :label="'el-icon-unlock'"><i class="el-icon-unlock"></i></el-radio>
+                        <el-radio :label="'el-icon-key'"><i class="el-icon-key"></i></el-radio>
+                        <el-radio :label="'el-icon-service'"><i class="el-icon-service"></i></el-radio>
+                        <el-radio :label="'el-icon-mobile-phone'"><i class="el-icon-mobile-phone"></i></el-radio>
+                        <el-radio :label="'el-icon-bicycle'"><i class="el-icon-bicycle"></i></el-radio>
+                        <el-radio :label="'el-icon-truck'"><i class="el-icon-truck"></i></el-radio>
+                        <el-radio :label="'el-icon-ship'"><i class="el-icon-ship"></i></el-radio>
+                        <el-radio :label="'el-icon-basketball'"><i class="el-icon-basketball"></i></el-radio>
+                        <el-radio :label="'el-icon-football'"><i class="el-icon-football"></i></el-radio>
+                        <el-radio :label="'el-icon-soccer'"><i class="el-icon-soccer"></i></el-radio>
+                        <el-radio :label="'el-icon-baseball'"><i class="el-icon-baseball"></i></el-radio>
+                        <el-radio :label="'el-icon-wind-power'"><i class="el-icon-wind-power"></i></el-radio>
+                        <el-radio :label="'el-icon-light-rain'"><i class="el-icon-light-rain"></i></el-radio>
+                        <el-radio :label="'el-icon-lightning'"><i class="el-icon-lightning"></i></el-radio>
+                        <el-radio :label="'el-icon-heavy-rain'"><i class="el-icon-heavy-rain"></i></el-radio>
+                        <el-radio :label="'el-icon-sunrise'"><i class="el-icon-sunrise"></i></el-radio>
+                        <el-radio :label="'el-icon-sunrise-1'"><i class="el-icon-sunrise-1"></i></el-radio>
+                        <el-radio :label="'el-icon-sunset'"><i class="el-icon-sunset"></i></el-radio>
+                        <el-radio :label="'el-icon-sunny'"><i class="el-icon-sunny"></i></el-radio>
+                        <el-radio :label="'el-icon-cloudy'"><i class="el-icon-cloudy"></i></el-radio>
+                        <el-radio :label="'el-icon-partly-cloudy'"><i class="el-icon-partly-cloudy"></i></el-radio>
+                        <el-radio :label="'el-icon-cloudy-and-sunny'"><i class="el-icon-cloudy-and-sunny"></i></el-radio>
+                        <el-radio :label="'el-icon-moon'"><i class="el-icon-moon"></i></el-radio>
+                        <el-radio :label="'el-icon-moon-night'"><i class="el-icon-moon-night"></i></el-radio>
+                        <el-radio :label="'el-icon-dish'"><i class="el-icon-dish"></i></el-radio>
+                        <el-radio :label="'el-icon-dish-1'"><i class="el-icon-dish-1"></i></el-radio>
+                        <el-radio :label="'el-icon-food'"><i class="el-icon-food"></i></el-radio>
+                        <el-radio :label="'el-icon-chicken'"><i class="el-icon-chicken"></i></el-radio>
+                        <el-radio :label="'el-icon-fork-spoon'"><i class="el-icon-fork-spoon"></i></el-radio>
+                        <el-radio :label="'el-icon-knife-fork'"><i class="el-icon-knife-fork"></i></el-radio>
+                        <el-radio :label="'el-icon-burger'"><i class="el-icon-burger"></i></el-radio>
+                        <el-radio :label="'el-icon-tableware'"><i class="el-icon-tableware"></i></el-radio>
+                        <el-radio :label="'el-icon-sugar'"><i class="el-icon-sugar"></i></el-radio>
+                        <el-radio :label="'el-icon-dessert'"><i class="el-icon-dessert"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream'"><i class="el-icon-ice-cream"></i></el-radio>
+                        <el-radio :label="'el-icon-hot-water'"><i class="el-icon-hot-water"></i></el-radio>
+                        <el-radio :label="'el-icon-water-cup'"><i class="el-icon-water-cup"></i></el-radio>
+                        <el-radio :label="'el-icon-coffee-cup'"><i class="el-icon-coffee-cup"></i></el-radio>
+                        <el-radio :label="'el-icon-cold-drink'"><i class="el-icon-cold-drink"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet'"><i class="el-icon-goblet"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-full'"><i class="el-icon-goblet-full"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-square'"><i class="el-icon-goblet-square"></i></el-radio>
+                        <el-radio :label="'el-icon-goblet-square-full'"><i class="el-icon-goblet-square-full"></i></el-radio>
+                        <el-radio :label="'el-icon-refrigerator'"><i class="el-icon-refrigerator"></i></el-radio>
+                        <el-radio :label="'el-icon-grape'"><i class="el-icon-grape"></i></el-radio>
+                        <el-radio :label="'el-icon-watermelon'"><i class="el-icon-watermelon"></i></el-radio>
+                        <el-radio :label="'el-icon-cherry'"><i class="el-icon-cherry"></i></el-radio>
+                        <el-radio :label="'el-icon-apple'"><i class="el-icon-apple"></i></el-radio>
+                        <el-radio :label="'el-icon-pear'"><i class="el-icon-pear"></i></el-radio>
+                        <el-radio :label="'el-icon-orange'"><i class="el-icon-orange"></i></el-radio>
+                        <el-radio :label="'el-icon-coffee'"><i class="el-icon-coffee"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-tea'"><i class="el-icon-ice-tea"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-drink'"><i class="el-icon-ice-drink"></i></el-radio>
+                        <el-radio :label="'el-icon-milk-tea'"><i class="el-icon-milk-tea"></i></el-radio>
+                        <el-radio :label="'el-icon-potato-strips'"><i class="el-icon-potato-strips"></i></el-radio>
+                        <el-radio :label="'el-icon-lollipop'"><i class="el-icon-lollipop"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream-square'"><i class="el-icon-ice-cream-square"></i></el-radio>
+                        <el-radio :label="'el-icon-ice-cream-round'"><i class="el-icon-ice-cream-round"></i></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+
+                <el-form-item>
+                    <el-button type="primary" @click="submitEditForm('editParentUrlForm')">立即创建</el-button>
+                    <el-button @click="resetForm('editParentUrlForm')">重置</el-button>
                 </el-form-item>
             </el-form>
 
 
             <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible2 = false;resetForm('ruleForm')">取 消</el-button>
-                </span>
+                    <el-button @click="centerDialogVisible2 = false;resetForm('editParentUrlForm');">取 消</el-button>
+            </span>
         </el-dialog>
 
         <!--搜索框-->
@@ -298,17 +888,26 @@
                 url: '',
                 icon: ''
             },
-            editForm: {
-                userId: 0,
-                username: '',
-                createtime: '',
-                password: '',
+            // 编辑资源表单数据
+            editChildrenUrlForm: {
+                name: '',
+                isParent: 0,
+                parentId: '',
+                url: '',
+                icon: ''
+            },
+            editParentUrlForm: {
+                name: '',
+                isParent: 0,
+                parentId: '',
+                url: '',
+                icon: ''
             },
             // 表单校验规则
             rules: {
                 name: [
                     {required: true, message: '请输入资源名', trigger: 'blur'},
-                    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                    {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
                 ],
                 url: [
                     {required: true, message: '请输入资源路径', trigger: 'blur'},
@@ -318,7 +917,7 @@
             rules2: {
                 name: [
                     {required: true, message: '请输入资源名', trigger: 'blur'},
-                    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                    {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
                 ],
                 parentId: [
                     {required: true, message: '请选择父节点', trigger: 'blur'}
@@ -332,17 +931,41 @@
             children: true,
             // 父节点显示状态
             parent: false,
-            parentOptions: []
+            parentOptions: [],
+            // 是否是父节点
+            isParent: 0
         },
         methods: {
             handleEdit(index, row) {
-                this.getAllUrl();
                 this.centerDialogVisible2 = true;
-                this.editForm.userId = row.id;
-                this.editForm.username = row.username;
-                this.editForm.createtime = row.createtime;
-                this.editForm.roleId = row.roleId;
-                this.editForm.password = row.password;
+                if (row.isParent === '0') {
+                    this.getAllParent();
+                    this.isParent = 0;
+                    this.editChildrenUrlForm.children = row.children;
+                    this.editChildrenUrlForm.icon = row.icon;
+                    this.editChildrenUrlForm.id = row.id;
+                    this.editChildrenUrlForm.isParent = row.isParent;
+                    this.editChildrenUrlForm.name = row.name;
+                    this.editChildrenUrlForm.parentId = row.parentId;
+                    this.editChildrenUrlForm.path = row.path;
+                    this.editChildrenUrlForm.priority = row.priority;
+                    this.editChildrenUrlForm.url = row.url;
+                }else {
+                    this.isParent = 1;
+                    this.children = false;
+                    this.parent = true;
+                    this.editParentUrlForm.children = row.children;
+                    this.editParentUrlForm.icon = row.icon;
+                    this.editParentUrlForm.id = row.id;
+                    this.editParentUrlForm.isParent = row.isParent;
+                    this.editParentUrlForm.name = row.name;
+                    this.editParentUrlForm.parentId = row.parentId;
+                    this.editParentUrlForm.path = row.path;
+                    this.editParentUrlForm.priority = row.priority;
+                    this.editParentUrlForm.url = row.url;
+                }
+
+
             },
             handleDelete(index, row) {
                 this.$confirm('此操作将永久删除, 是否继续?', '提示', {
@@ -378,12 +1001,14 @@
             // 新增对话框关闭之后
             handleAddClose() {
                 // 清除表单状态
-                this.resetForm('urlForm');
+                this.resetForm('childrenUrlForm');
+                this.resetForm('parentUrlForm');
             },
             // 编辑对话框关闭之后
             handleEditClose() {
                 // 清除表单状态
-                this.resetForm('urlForm');
+                this.resetForm('childrenUrlForm');
+                this.resetForm('parentUrlForm');
             },
             getAllUrl() {
                 axios.get('http://localhost:8080/url/' + this.currentPage + "/" + this.pageSize).then(res => {
@@ -406,19 +1031,39 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post("http://localhost:8080/url/addUrl", this.urlForm).then(resp => {
-                            if (resp.data.flag) {
-                                this.$message.success("添加资源成功！");
-                                // 过2秒后自动关闭窗口并刷新页面
-                                window.setTimeout(() => {
-                                    window.location.reload();
-                                }, 2000)
-                            } else {
-                                this.$message.error(resp.data.message);
-                            }
-                        }).catch(error => {
-                            console.log(error);
-                        })
+
+                        if (this.isParent === 0) {
+                            this.childrenUrlForm.isParent = 0;
+                            axios.post("http://localhost:8080/url/addUrl", this.childrenUrlForm).then(resp => {
+                                if (resp.data.flag) {
+                                    this.$message.success("添加资源成功！");
+                                    // 过2秒后自动关闭窗口并刷新页面
+                                    window.setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2000)
+                                } else {
+                                    this.$message.error(resp.data.message);
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                            })
+                        }else {
+                            this.parentUrlForm.isParent = 1;
+                            axios.post("http://localhost:8080/url/addUrl", this.parentUrlForm).then(resp => {
+                                if (resp.data.flag) {
+                                    this.$message.success("添加资源成功！");
+                                    // 过2秒后自动关闭窗口并刷新页面
+                                    window.setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2000)
+                                } else {
+                                    this.$message.error(resp.data.message);
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                            })
+                        }
+
                     } else {
                         this.$message.error("提交失败！请重新检查后再提交。");
                         return false;
@@ -429,19 +1074,37 @@
             submitEditForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post("http://localhost:8080/user/editUser", this.editForm).then(resp => {
-                            if (resp.data.flag) {
-                                this.$message.success("添加用户成功！");
-                                // 过2秒后自动关闭窗口并刷新页面
-                                window.setTimeout(() => {
-                                    window.location.reload();
-                                }, 2000)
-                            } else {
-                                this.$message.error(resp.data.message);
-                            }
-                        }).catch(error => {
-                            console.log(error);
-                        })
+
+                        if (this.isParent === 0) {
+                            axios.put("http://localhost:8080/url/updateUrl", this.editChildrenUrlForm).then(resp => {
+                                if (resp.data.flag) {
+                                    this.$message.success("添加用户成功！");
+                                    // 过2秒后自动关闭窗口并刷新页面
+                                    window.setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2000)
+                                } else {
+                                    this.$message.error(resp.data.message);
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                            })
+                        }else {
+                            axios.put("http://localhost:8080/url/updateUrl", this.editParentUrlForm).then(resp => {
+                                if (resp.data.flag) {
+                                    this.$message.success("添加用户成功！");
+                                    // 过2秒后自动关闭窗口并刷新页面
+                                    window.setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2000)
+                                } else {
+                                    this.$message.error(resp.data.message);
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                            })
+                        }
+
                     } else {
                         this.$message.error("提交失败！请重新检查后再提交。");
                         return false;
@@ -449,7 +1112,9 @@
                 });
             },
             resetForm(formName) {
-                this.$refs[formName].resetFields();
+                if (this.$refs[formName] !== undefined) {
+                    this.$refs[formName].resetFields();
+                }
                 // 重置后，默认选择非父节点
                 this.children = true;
                 this.parent = false;
@@ -476,7 +1141,7 @@
                 })
             },
             // 根据是否是父节点来展示不同的内容
-            isParent() {
+            change() {
                 // this.$message.success(this.urlForm.isParent + "");
                 if (this.children === false) {
                     this.children = true;
@@ -484,6 +1149,15 @@
                 }else {
                     this.children = false;
                     this.parent = true;
+                }
+            },
+            cancel() {
+                this.centerDialogVisible1 = false;
+                if (this.isParent === 0) {
+                    this.resetForm('childrenUrlForm');
+                }else {
+                    this.isParent = 0;
+                    this.resetForm('parentUrlForm');
                 }
             }
 

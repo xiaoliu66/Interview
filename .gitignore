@@ -27,4 +27,6 @@ hs_err_pid*
 /target/
 /.idea/
 /src/main/resources/static/data/
-/src/test/
+/src/test/*
+/Interview.iml
+/.gradle/

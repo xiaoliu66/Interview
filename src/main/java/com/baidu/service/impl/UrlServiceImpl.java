@@ -155,7 +155,7 @@ public class UrlServiceImpl implements UrlService {
             urlQueryWrapper.select("max(substring(path,1,1)) as path").eq("is_parent",1);
             Url one = urlMapper.selectOne(urlQueryWrapper);
 
-            url.setUrl("/html/" + url.getUrl());
+
             url.setPath(Integer.parseInt(one.getPath()) + 1 + "");
             url.setPriority(Integer.parseInt(one.getPath()) + 1);
 
@@ -169,7 +169,18 @@ public class UrlServiceImpl implements UrlService {
      * @param urlId
      */
     @Override
+    @Transactional
     public void deleteUrlById(Integer urlId) {
         urlMapper.deleteById(urlId);
+    }
+
+    /**
+     * 修改资源
+     * @param url
+     */
+    @Override
+    @Transactional
+    public void updateUrl(Url url) {
+        urlMapper.updateById(url);
     }
 }
